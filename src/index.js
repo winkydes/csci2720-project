@@ -1,3 +1,7 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import $ from 'jquery';
+import Popper from 'popper.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { StrictMode } from 'react';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
