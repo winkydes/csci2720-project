@@ -1,10 +1,12 @@
-const { type } = require("@testing-library/user-event/dist/type");
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 
 mongoose.connect('mongodb://localhost/new');
 const db = mongoose.connection;
+
+//Upon connection failure
+db.on('error', console.error.bind(console,'Connection error:'));
 
 db.once('open', function() {
     console.log("Connection is open...");
