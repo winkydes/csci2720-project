@@ -1,8 +1,20 @@
+const cors = require('cors');
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
+require('dotenv').config();
 
-mongoose.connect('mongodb://localhost/new');
+const app = express();
+const uri = process.env.MONGODB_URI;
+
+// Use CORS
+app.use(cors({ origin: '*' }));
+
+// Connection
+mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
 const db = mongoose.connection;
 
 //Upon connection failure
