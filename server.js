@@ -80,6 +80,7 @@ db.once('open', function() {
 
     const User = mongoose.model('User', UserSchema);
 
+    app.get('/*', (req,res) => res.send("Success"));
+
 });
-app.get('/*', (req,res) => res.send("Success"));
 const server = app.listen(80);
