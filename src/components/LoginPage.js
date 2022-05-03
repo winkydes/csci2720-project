@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 
 function LoginPage() {
   const [username,setUsername] = React.useState('');
@@ -31,6 +32,7 @@ function LoginPage() {
 
         <input className="mt-2" type="submit" />
       </form>
+      <Link to="/register">Don't have an account? Click here to register!</Link>
     </div>
   );
 }
