@@ -1,10 +1,14 @@
 const cors = require('cors');
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require('body-parser')
 require('dotenv').config();
 
 const app = express();
 const uri = process.env.MONGODB_URI;
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.json());
 
 // Use CORS
 app.use(cors({ origin: '*' }));
@@ -79,6 +83,40 @@ db.once('open', function() {
     });
 
     const User = mongoose.model('User', UserSchema);
+
+    app.post('/checkUser', (req, res) => {
+        User.findOne({username: req.body['username']}, (err, user) => {
+            if (err) res.send("cannot find user");
+            else if (user) res.send({verified: false});
+            else res.send({verified: true});
+        })
+    })
+
+    app.post('/createUser', (req, res) => {
+        User.create({
+            admin: false,
+            username: req.body['username'],
+            password: req.body['password'],
+            favouriteLocation: []
+        }, (err, user) => {
+            if (err) res.status(500).set('content-type', 'text/plain').send("Error in creating user");
+            else res.status(201).set('content-type', 'text/plain').send({message: `User created with username ${user.username}, and password ${user.password}`});
+        })
+    })
+
+    app.get('/listUser', (req, res) => {
+        User.find({}, (err, list) => {
+            if (err) console.log(err);
+            else res.send(list);
+        })
+    });
+
+    app.get('/deleteAllUSer', (req, res) => {
+        User.deleteMany({}, (err) => {
+            if (err) console.log(err);
+            else res.send("done");
+        })
+    })
 
     app.get('/*', (req,res) => res.send("Success"));
 

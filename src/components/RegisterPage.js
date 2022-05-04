@@ -13,6 +13,41 @@ function RegisterPage() {
     // Check username and password
     setUsernameValid(username !== '');
 		setPasswordValid(password !== '');
+
+    //check password format
+
+    //check if username have been used
+    fetch("http://localhost/checkUser", {
+      method: 'POST',
+      body: JSON.stringify({username: username}),
+      mode: 'cors',
+      headers: {
+        "Content-Type": 'application/json',
+        "Accept": 'application/json',
+      },
+    })
+    .then(res => res.json())
+    .then((res) => {
+      setUsernameValid(username => username = res.verified);
+      if (res.verified && isPasswordValid) {
+        fetch("http://localhost/createUser", {
+          method: 'POST',
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+          mode: 'cors',
+          headers: {
+            "Content-Type": 'application/json',
+            "Accept": 'application/json',
+          },
+        })
+        .then(res => res.json())
+        .then((res) => console.log(res.message));
+      }
+    });
+
+    
   };
 
   return (
