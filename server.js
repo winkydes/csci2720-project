@@ -84,7 +84,8 @@ db.once('open', function() {
 
     const User = mongoose.model('User', UserSchema);
 
-    app.post('/checkUser', (req, res) => {
+    // check if username is duplicated in database
+    app.post('/checkUsername', (req, res) => {
         User.findOne({username: req.body['username']}, (err, user) => {
             if (err) res.send("cannot find user");
             else if (user) res.send({verified: false});
@@ -92,6 +93,7 @@ db.once('open', function() {
         })
     })
 
+    // create user when all conditions are checked
     app.post('/createUser', (req, res) => {
         User.create({
             admin: false,
@@ -101,6 +103,23 @@ db.once('open', function() {
         }, (err, user) => {
             if (err) res.status(500).set('content-type', 'text/plain').send("Error in creating user");
             else res.status(201).set('content-type', 'text/plain').send({message: `User created with username ${user.username}, and password ${user.password}`});
+        })
+    })
+
+    // verify login input data
+    app.post('/verifyLogin', (req, res) => {
+        User.findOne({username: req.body['username']}, (err, user) => {
+            if (err) console.log(err);
+            else if (user === null)
+                res.send({
+                    passwordVerified: false,
+                    usernameVerified: false
+                });
+            else 
+                res.send({
+                passwordVerified: user.password === req.body['password'],
+                usernameVerified: true
+                });
         })
     })
 

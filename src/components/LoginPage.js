@@ -1,11 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function LoginPage() {
   const [username,setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isUsernameValid, setUsernameValid] = React.useState(true);
   const [isPasswordValid, setPasswordValid] = React.useState(true);
+
+  let navigate = useNavigate();
 
   const handleSubmit = (event) => {
     // Prevent page reload
@@ -14,6 +16,26 @@ function LoginPage() {
     // Check username and password
     setUsernameValid(username !== '');
     setPasswordValid(password !== '');
+
+    // fire checking if user exists and password correct
+    fetch("http://localhost/verifyLogin", {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+      mode: 'cors',
+      headers: {
+        "Content-Type": 'application/json',
+        "Accept": 'application/json',
+      },
+    })
+    .then(res => res.json())
+    .then((res) => {
+      setUsernameValid(res.usernameVerified);
+      setPasswordValid(res.passwordVerified);
+      res.passwordVerified && res.usernameVerified? navigate('../home'):console.log("you have inputted the wrong info");
+    })
   };
 
   return (

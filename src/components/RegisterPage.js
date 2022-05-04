@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterPage() {
   const [username, setUsername] = React.useState('');
@@ -6,6 +7,11 @@ function RegisterPage() {
   const [isUsernameValid, setUsernameValid] = React.useState(true);
   const [isPasswordValid, setPasswordValid] = React.useState(true);
 
+  let navigate = useNavigate()
+
+  function sendRequest() {
+    navigate("../home");
+  }
   const handleSubmit = (event) => {
     // Prevent page reload
     event.preventDefault();
@@ -17,7 +23,7 @@ function RegisterPage() {
     //check password format
 
     //check if username have been used
-    fetch("http://localhost/checkUser", {
+    fetch("http://localhost/checkUsername", {
       method: 'POST',
       body: JSON.stringify({username: username}),
       mode: 'cors',
@@ -43,7 +49,7 @@ function RegisterPage() {
           },
         })
         .then(res => res.json())
-        .then((res) => console.log(res.message));
+        .then(() => sendRequest());
       }
     });
 
