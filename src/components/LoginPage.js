@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 
 function LoginPage() {
-  const [username,setUsername] = React.useState('');
+  const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isUsernameValid, setUsernameValid] = React.useState(true);
   const [isPasswordValid, setPasswordValid] = React.useState(true);
@@ -18,7 +18,7 @@ function LoginPage() {
     setPasswordValid(password !== '');
 
     // fire checking if user exists and password correct
-    fetch("http://localhost/verifyLogin", {
+    fetch('http://localhost/verifyLogin', {
       method: 'POST',
       body: JSON.stringify({
         username: username,
@@ -26,16 +26,18 @@ function LoginPage() {
       }),
       mode: 'cors',
       headers: {
-        "Content-Type": 'application/json',
-        "Accept": 'application/json',
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
     })
-    .then(res => res.json())
-    .then((res) => {
-      setUsernameValid(res.usernameVerified);
-      setPasswordValid(res.passwordVerified);
-      res.passwordVerified && res.usernameVerified? navigate('../home'):console.log("you have inputted the wrong info");
-    })
+      .then((res) => res.json())
+      .then((res) => {
+        setUsernameValid(res.usernameVerified);
+        setPasswordValid(res.passwordVerified);
+        res.passwordVerified && res.usernameVerified
+          ? navigate('../home')
+          : console.log('you have inputted the wrong info');
+      });
   };
 
   return (
@@ -44,12 +46,24 @@ function LoginPage() {
       <form className="d-flex flex-column" onSubmit={handleSubmit}>
         <div className="w-100 mt-2 d-flex justify-content-between">
           <label className="me-2">Username:</label>
-          <input className={`border rounded ${isUsernameValid ? 'border-dark' : 'border-danger'}`} placeholder="username" value={username} onChange={e => setUsername(e.target.value)} type="text" />
+          <input
+            className={`border rounded ${isUsernameValid ? 'border-dark' : 'border-danger'}`}
+            placeholder="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            type="text"
+          />
         </div>
-        
+
         <div className="w-100 mt-2 d-flex justify-content-between">
           <label className="me-2">Password:</label>
-          <input className={`border rounded ${isPasswordValid ? 'border-dark' : 'border-danger'}`} placeholder="password" value={password} onChange={e => setPassword(e.target.value)} type="text" />
+          <input
+            className={`border rounded ${isPasswordValid ? 'border-dark' : 'border-danger'}`}
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="text"
+          />
         </div>
 
         <input className="mt-2" type="submit" />
