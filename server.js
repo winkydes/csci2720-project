@@ -72,6 +72,7 @@ db.once('open', function () {
     username: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -143,6 +144,14 @@ db.once('open', function () {
       else res.send('done');
     });
   });
+
+  app.get('/createAdmin', (req, res) => {
+      User.create({
+          admin: true,
+          username: 'admin',
+          password: 'admin',
+      }, () => res.send('Done'));
+  })
 
   app.get('/*', (req, res) => res.send('Success'));
 });

@@ -12,18 +12,19 @@ function RegisterPage() {
   function sendRequest() {
     navigate('../home');
   }
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     // Prevent page reload
     event.preventDefault();
 
     // Check username and password
-    setUsernameValid(username !== '');
-    setPasswordValid(password !== '');
+    await setUsernameValid(username !== '' && username.length >= 4 && username.length <=20);
+    await setPasswordValid(password !== '' && password.length >= 4 && password.length <=20);
 
     //check password format
 
     //check if username have been used
-    fetch('http://localhost/checkUsername', {
+    if (isUsernameValid && isPasswordValid){
+      fetch('http://localhost/checkUsername', {
       method: 'POST',
       body: JSON.stringify({ username: username }),
       mode: 'cors',
@@ -52,6 +53,7 @@ function RegisterPage() {
             .then(() => sendRequest());
         }
       });
+    }
   };
 
   return (
@@ -62,7 +64,7 @@ function RegisterPage() {
           <label className="me-2">Username:</label>
           <input
             className={`border rounded ${isUsernameValid ? 'border-dark' : 'border-danger'}`}
-            placeholder="username"
+            placeholder="4-20 character"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             type="text"
@@ -73,14 +75,14 @@ function RegisterPage() {
           <label className="me-2">Password:</label>
           <input
             className={`border rounded ${isPasswordValid ? 'border-dark' : 'border-danger'}`}
-            placeholder="password"
+            placeholder="4-20 character"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="text"
           />
         </div>
 
-        <input type="submit" />
+        <input className="mt-2" type="submit" />
       </form>
     </div>
   );
