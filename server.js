@@ -146,12 +146,15 @@ db.once('open', function () {
   });
 
   app.get('/createAdmin', (req, res) => {
-      User.create({
-          admin: true,
-          username: 'admin',
-          password: 'admin',
-      }, () => res.send('Done'));
-  })
+    User.create(
+      {
+        admin: true,
+        username: 'admin',
+        password: 'admin',
+      },
+      () => res.send('Done')
+    );
+  });
 
   app.get('/*', (req, res) => res.send('Success'));
 });

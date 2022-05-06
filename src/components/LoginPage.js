@@ -1,21 +1,19 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-function LoginPage() {
+function LoginPage(props) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isUsernameValid, setUsernameValid] = React.useState(true);
   const [isPasswordValid, setPasswordValid] = React.useState(true);
 
-  let navigate = useNavigate();
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     // Prevent page reload
     event.preventDefault();
 
     // Check username and password
-    setUsernameValid(username !== '');
-    setPasswordValid(password !== '');
+    await setUsernameValid(username !== '');
+    await setPasswordValid(password !== '');
 
     // fire checking if user exists and password correct
     fetch('http://localhost/verifyLogin', {
@@ -34,10 +32,11 @@ function LoginPage() {
       .then((res) => {
         setUsernameValid(res.usernameVerified);
         setPasswordValid(res.passwordVerified);
-        res.passwordVerified && res.usernameVerified
-          ? navigate('../home')
-          : console.log('you have inputted the wrong info');
-      });
+        if (res.passwordVerified && res.usernameVerified){
+          props.callback(true);
+        } 
+        else console.log('you have inputted the wrong info');
+      })
   };
 
   return (

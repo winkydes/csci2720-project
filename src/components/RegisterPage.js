@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function RegisterPage() {
+function RegisterPage(props) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isUsernameValid, setUsernameValid] = React.useState(true);
@@ -10,6 +10,7 @@ function RegisterPage() {
   let navigate = useNavigate();
 
   function sendRequest() {
+    props.callback(true);
     navigate('../home');
   }
   const handleSubmit = async (event) => {
@@ -17,42 +18,42 @@ function RegisterPage() {
     event.preventDefault();
 
     // Check username and password
-    await setUsernameValid(username !== '' && username.length >= 4 && username.length <=20);
-    await setPasswordValid(password !== '' && password.length >= 4 && password.length <=20);
+    await setUsernameValid(username !== '' && username.length >= 4 && username.length <= 20);
+    await setPasswordValid(password !== '' && password.length >= 4 && password.length <= 20);
 
     //check password format
 
     //check if username have been used
-    if (isUsernameValid && isPasswordValid){
+    if (isUsernameValid && isPasswordValid) {
       fetch('http://localhost/checkUsername', {
-      method: 'POST',
-      body: JSON.stringify({ username: username }),
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setUsernameValid((username) => (username = res.verified));
-        if (res.verified && isPasswordValid) {
-          fetch('http://localhost/createUser', {
-            method: 'POST',
-            body: JSON.stringify({
-              username: username,
-              password: password,
-            }),
-            mode: 'cors',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          })
-            .then((res) => res.json())
-            .then(() => sendRequest());
-        }
-      });
+        method: 'POST',
+        body: JSON.stringify({ username: username }),
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setUsernameValid((username) => (username = res.verified));
+          if (res.verified && isPasswordValid) {
+            fetch('http://localhost/createUser', {
+              method: 'POST',
+              body: JSON.stringify({
+                username: username,
+                password: password,
+              }),
+              mode: 'cors',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+            })
+              .then((res) => res.json())
+              .then(() => sendRequest());
+          }
+        });
     }
   };
 
