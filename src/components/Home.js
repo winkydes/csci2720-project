@@ -11,21 +11,15 @@ function Home(props) {
         'Content-Type': 'application/json',
       },
     })
-      .then((res)=>console.log(res))
+      .then((res) => res.json())
+      .then((res) => console.log(res[0]))
   }
 
-  function handleReadRemoteFile(){
-    fetch('https://react-papaparse.js.org/static/csv/normal.csv')
-    .then((res)=>res.text())
-    .then((res) => console.log(res))
-  }
-
-  useEffect(fetch_data); 
+  useEffect(fetch_data, []); 
   return (
     <div>
       <div className="bg-light">This is homepage. Try commit.</div>
       <button onClick={() => props.callback(false)}>Logout</button>
-      <button onClick={() => handleReadRemoteFile()}>readRemoteFile</button>
     </div>);
 }
 

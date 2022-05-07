@@ -178,8 +178,9 @@ db.once('open', function () {
     dataStream.on("finish", () => {
         console.log(data);
         console.log(data.length);
-    });
-    res.send(data)
+        res.send(data)
+    })
+    //res.send(data)
   })
   //app.get('/*', (req, res) => res.send('Success'));
 });
