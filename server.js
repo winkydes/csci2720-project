@@ -1,11 +1,19 @@
+//import {usePapaParse} from 'react-papaparse'
+
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const papa = require("papaparse");
+const request = require("request");
+
 require('dotenv').config();
 
 const app = express();
 const uri = process.env.MONGODB_URI;
+const humidity_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv"
+const wind_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv"
+const air_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv"
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
@@ -156,7 +164,24 @@ db.once('open', function () {
     );
   });
 
-  app.get('/*', (req, res) => res.send('Success'));
+  // ref from : https://github.com/mholt/PapaParse/issues/440
+  app.get('/home',(req, res) => {
+    const parseStream = papa.parse(papa.NODE_STREAM_INPUT,{download: true,})
+    const dataStream = request
+      .get(humidity_csv_url)
+      .pipe(parseStream);
+    let data = [];
+    parseStream.on("data", chunk => {
+        data.push(chunk);
+    });
+    
+    dataStream.on("finish", () => {
+        console.log(data);
+        console.log(data.length);
+    });
+    res.send(data)
+  })
+  //app.get('/*', (req, res) => res.send('Success'));
 });
 
 const server = app.listen(80);
