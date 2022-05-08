@@ -14,7 +14,7 @@ const uri = process.env.MONGODB_URI;
 const humidity_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv"
 const wind_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv"
 const air_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv"
-
+const url_list = [humidity_csv_url, air_csv_url, wind_csv_url]
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -166,20 +166,31 @@ db.once('open', function () {
 
   // ref from : https://github.com/mholt/PapaParse/issues/440
   app.get('/home',(req, res) => {
+    let data = [];
+    let i = 0
+    while (i<3){
     const parseStream = papa.parse(papa.NODE_STREAM_INPUT,{download: true,})
     const dataStream = request
-      .get(humidity_csv_url)
+      .get(url_list[i])
       .pipe(parseStream);
-    let data = [];
     parseStream.on("data", chunk => {
         data.push(chunk);
     });
-    
-    dataStream.on("finish", () => {
-        console.log(data);
-        console.log(data.length);
+    if (i == 2){
+      dataStream.on("finish", () => {
+      console.log(data);
+      console.log(data.length);
+      // make sure that all data is obtained correctly (not sure why sometimes not getting all data if used i == 2 )
+      if (data.length==92){
         res.send(data)
-    })
+      }
+      i++;
+      })
+      }
+    i++;
+    }
+
+  
     //res.send(data)
   })
   //app.get('/*', (req, res) => res.send('Success'));
