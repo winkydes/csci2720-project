@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../css/login.css';
 
 function LoginPage(props) {
   const [username, setUsername] = React.useState('');
@@ -41,33 +42,41 @@ function LoginPage(props) {
 
   return (
     <div className="h-100 d-flex justify-content-center align-items-center flex-column">
-      <h2>Login!</h2>
-      <form className="d-flex flex-column" onSubmit={handleSubmit}>
-        <div className="w-100 mt-2 d-flex justify-content-between">
-          <label className="me-2">Username:</label>
-          <input
-            className={`border rounded ${isUsernameValid ? 'border-dark' : 'border-danger'}`}
-            placeholder="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            type="text"
-          />
-        </div>
+      {/* <div class="container"> */}
+      <section class="login">
+        <h2>Login!</h2>
+        <form className="d-flex flex-column" onSubmit={handleSubmit}>
+          {/* <div className="w-100 mt-2 d-flex justify-content-between"> */}
+          <div className="mb-3">
+            {/* <label className="me-2">Username:</label> */}
+            <input
+              className={`border rounded ${isUsernameValid ? 'form-control border-dark' : 'form-control border-danger'}`}
+              placeholder="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              type="text"
+            />
+          </div>
 
-        <div className="w-100 mt-2 d-flex justify-content-between">
-          <label className="me-2">Password:</label>
-          <input
-            className={`border rounded ${isPasswordValid ? 'border-dark' : 'border-danger'}`}
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="text"
-          />
-        </div>
+          {/* <div className="w-100 mt-2 d-flex justify-content-between"> */}
+          <div className="mb-3">
+            {/* <label className="me-2">Password:</label> */}
+            <input
+              className={`border rounded ${isPasswordValid ? 'form-control border-dark' : 'form-control border-danger'}`}
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="text"
+            />
+          </div>
 
-        <input className="mt-2" type="submit" />
-      </form>
-      <Link to="/register">Don't have an account? Click here to register!</Link>
+          <div class="mb-3">
+            <button class="btn btn-primary d-block w-100" type="submit">Log In</button>
+            {/* <input className="mt-2" type="submit" /> */}
+          </div>
+        </form>
+        <Link to="/register">Don't have an account?</Link>
+      </section>
     </div>
   );
 }
