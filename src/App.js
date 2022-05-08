@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
+import LocationDetail from './components/LocationDetail';
 import './App.css';
 
 function App() {
@@ -12,9 +13,19 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Navigate replace to="/login" />} />
-        <Route path="/home" element={isLogIn? <Home callback={setIsLogIn.bind(this)} /> : <Navigate replace to="/login" />} />
-        <Route path="/login" element={isLogIn? <Navigate replace to="/home" /> : <LoginPage callback={setIsLogIn.bind(this)} />} />
-        <Route path="/register" element={isLogIn? <Navigate replace to="/home" /> : <RegisterPage callback={setIsLogIn.bind(this)} />} />
+        <Route
+          path="/home"
+          element={isLogIn ? <Home callback={setIsLogIn.bind(this)} /> : <Navigate replace to="/login" />}
+        />
+        <Route
+          path="/login"
+          element={isLogIn ? <Navigate replace to="/home" /> : <LoginPage callback={setIsLogIn.bind(this)} />}
+        />
+        <Route
+          path="/register"
+          element={isLogIn ? <Navigate replace to="/home" /> : <RegisterPage callback={setIsLogIn.bind(this)} />}
+        />
+        <Route path="/locationDetail" element={isLogIn ? <LocationDetail /> : <Navigate replace to="/login" />} />
       </Routes>
     </div>
   );

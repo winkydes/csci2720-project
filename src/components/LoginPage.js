@@ -32,11 +32,10 @@ function LoginPage(props) {
       .then((res) => {
         setUsernameValid(res.usernameVerified);
         setPasswordValid(res.passwordVerified);
-        if (res.passwordVerified && res.usernameVerified){
+        if (res.passwordVerified && res.usernameVerified) {
           props.callback(true);
-        } 
-        else console.log('you have inputted the wrong info');
-      })
+        } else console.log('you have inputted the wrong info');
+      });
   };
 
   return (
