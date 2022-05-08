@@ -1,16 +1,14 @@
 import React, {useState} from "react";
 import {MDBDataTable} from 'mdbreact'
 
-function Table({data, sorting}){
-    console.log("HI")
-    console.log(data)
-
+function Table(props){
+    console.log(props.data)
     return (
         <MDBDataTable
         striped
         bordered
         small
-        data={data}
+        data={props.data}
       />
     );
 	
