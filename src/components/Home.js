@@ -80,6 +80,16 @@ function Home(props) {
         let j = 0
         setDataList([])
         while(j<location_list.length){
+          // setDataList(curr => curr.push(
+          //   {
+          //     location: location_list[j],
+          //     temp: temp_list[j],
+          //     direction: direction_list[j],
+          //     speed: speed_list[j],
+          //     gust: gust_list[j],
+          //     humid: humid_list[j]
+          //   }
+          // ))
           data_list.push(
             {
               location: location_list[j],
@@ -93,7 +103,6 @@ function Home(props) {
           setDataList(data_list)
           j++
         }
-          
         console.log(data_list)
         setTableData({
           columns: [
@@ -134,7 +143,7 @@ function Home(props) {
               width: 150
             },
           ],   
-          rows : data_list          
+          rows : data_list.slice(data_list.length-49,data_list.length)          
         })
       })
   }
