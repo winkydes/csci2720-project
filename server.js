@@ -139,6 +139,27 @@ db.once('open', function () {
     });
   });
 
+  // submit comment
+  app.post('/postComment', (req, res) => {
+    Comment.create(
+      { username: req.body['username'], content: req.body['content'], date: Date.now() },
+      (err, newComment) => {
+        if (err) console.log(err);
+        else {
+          console.log(req.body['location']);
+          Location.findOneAndUpdate(
+            { name: req.body['location'] },
+            { $push: { comments: newComment } },
+            { new: true }
+          ).exec((err, loc) => {
+            if (err) console.log(err);
+            else res.send({ success: true });
+          });
+        }
+      }
+    );
+  });
+
   app.get('/listUser', (req, res) => {
     User.find({}, (err, list) => {
       if (err) console.log(err);
@@ -146,8 +167,40 @@ db.once('open', function () {
     });
   });
 
-  app.get('/deleteAllUSer', (req, res) => {
+  app.get('/listLocation', (req, res) => {
+    Location.find({}, (err, list) => {
+      if (err) console.log(err);
+      else res.send(list);
+    });
+  });
+
+  app.get('/listComment', (req, res) => {
+    Comment.find({}, (err, list) => {
+      if (err) console.log(err);
+      else res.send(list);
+    });
+  });
+
+  app.get('/createTestLocation', (req, res) => {
+    Location.create({ latitude: 0, longtitude: 0, name: 'testLocation', comments: [] }, () => res.send('ok'));
+  });
+
+  app.get('/deleteAllUser', (req, res) => {
     User.deleteMany({}, (err) => {
+      if (err) console.log(err);
+      else res.send('done');
+    });
+  });
+
+  app.get('/deleteComment', (req, res) => {
+    Comment.deleteMany({}, (err) => {
+      if (err) console.log(err);
+      else res.send('done');
+    });
+  });
+
+  app.get('/deleteLocation', (req, res) => {
+    Location.deleteMany({}, (err) => {
       if (err) console.log(err);
       else res.send('done');
     });

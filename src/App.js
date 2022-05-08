@@ -8,6 +8,7 @@ import './App.css';
 
 function App() {
   const [isLogIn, setIsLogIn] = React.useState(false);
+  const [username, setUsername] = React.useState('');
 
   return (
     <div className="App">
@@ -15,17 +16,28 @@ function App() {
         <Route path="/" element={<Navigate replace to="/login" />} />
         <Route
           path="/home"
-          element={isLogIn ? <Home callback={setIsLogIn.bind(this)} /> : <Navigate replace to="/login" />}
+          element={
+            isLogIn ? <Home callback={setIsLogIn.bind(this)} username={username} /> : <Navigate replace to="/login" />
+          }
         />
         <Route
           path="/login"
-          element={isLogIn ? <Navigate replace to="/home" /> : <LoginPage callback={setIsLogIn.bind(this)} />}
+          element={
+            isLogIn ? (
+              <Navigate replace to="/home" />
+            ) : (
+              <LoginPage callback={setIsLogIn.bind(this)} callbackUsername={setUsername.bind(this)} />
+            )
+          }
         />
         <Route
           path="/register"
           element={isLogIn ? <Navigate replace to="/home" /> : <RegisterPage callback={setIsLogIn.bind(this)} />}
         />
-        <Route path="/locationDetail" element={isLogIn ? <LocationDetail /> : <Navigate replace to="/login" />} />
+        <Route
+          path="/locationDetail"
+          element={isLogIn ? <LocationDetail username={username} /> : <Navigate replace to="/login" />}
+        />
       </Routes>
     </div>
   );

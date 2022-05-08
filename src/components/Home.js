@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 //import {usePapaParse} from 'react-papaparse'
 
 function Home(props) {
+  let navigate = useNavigate();
+
   function fetch_data() {
     fetch('http://localhost/home', {
       method: 'GET',
@@ -20,7 +22,7 @@ function Home(props) {
     <div>
       <div className="bg-light">This is homepage. Try commit.</div>
       <button onClick={() => props.callback(false)}>Logout</button>
-      <Link to="/locationDetail">Check Location</Link>
+      <button onClick={() => navigate('../locationDetail')}>Check Location</button>
     </div>
   );
 }
