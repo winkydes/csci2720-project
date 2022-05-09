@@ -135,32 +135,181 @@ db.once('open', function () {
         res.send({
           passwordVerified: user.password === req.body['password'],
           usernameVerified: true,
+          isAdmin: user.admin,
         });
     });
   });
 
-  app.get('/listUser', (req, res) => {
+
+  //  location data CRUD
+  app.post('/createLocation', (req, res) => {
+    Location.create(
+      {
+        latitude: req.body['lat'],
+        longtitude: req.body['long'],
+        name: req.body['name'],
+        },
+      // () => res.send('Done'),
+      // () => res.send('Error')
+      (err, loc) =>  {
+        if (err) res.send('Error');
+        else res.send('Done');
+      }
+    );
+    
+
+  });
+
+  // app.post('/createLocation', (req, res) => {
+  //   let myData = new Location({
+  //     latitude: req.body['lat'],
+  //     longtitude: req.body['long'],
+  //     name: req.body['name'],
+  //   });
+
+  //   myData.save(err)
+  //     .then((meg) => {
+  //       console.log(meg);
+  //       res.send('Done');
+  //     })
+  // })
+
+
+
+  app.post('/listLocation', (req, res) => {
+    Location.find({}, (err, list) => {
+      if (err) console.log(err);
+      else res.send(list);
+      console.log(list);
+    });
+  });
+
+  app.post('/findLocation', (req, res) => {
+    let temp = {};
+    req.body['lat'] ? (temp['latitude'] = req.body['lat']) : null;
+    req.body['long'] ? (temp['longtitude'] = req.body['long']) : null;
+    req.body['name'] ? (temp['name'] = req.body['name']) : null;
+
+      console.log(temp);
+    Location.find(
+      temp , (err, location) => {
+        console.log(location);
+      if (err) console.log(err);
+      else res.send(location);
+    });
+  });
+  
+  app.post('/updateLat', (req, res) => {
+    Location.findOneAndUpdate({
+      longtitude: req.body['long'],
+      name: req.body['name'],
+    }, {
+      latitude: req.body['lat'],
+    }, (err, location) => {
+      if (err) res.send("Error");
+      else if (location) res.send("Done");
+      else res.send("No such record");
+    });
+  });
+  
+  app.post('/updateLong', (req, res) => {
+    Location.findOneAndUpdate({
+      latitude: req.body['lat'],
+      name: req.body['name'],
+    }, {
+      longtitude: req.body['long'],
+    }, (err, location) => {
+      if (err) res.send("Error");
+      else if (location) res.send("Done");
+      else res.send("No such record");
+    });
+  });
+
+  app.post('/updateName', (req, res) => {
+    Location.findOneAndUpdate({
+      latitude: req.body['lat'],
+      longtitude: req.body['long'],
+    }, {
+      name: req.body['name'],
+    }, (err, location) => {
+      if (err) res.send("Error");
+      else if (location) res.send("Done");
+      else res.send("No such record");
+    });
+  });
+
+  app.post('/deleteLocation', (req, res) => {
+    Location.deleteMany({ latitude: req.body['lat'], longtitude: req.body['long'], name: req.body['name'], }, (err, location) => {
+      if (err) res.send("Error");
+      else if (location.deletedCount) res.send('done');
+      else res.send('No such record');
+    });
+  });
+
+  // user CRUD
+  app.post('/createUserAdmin', (req, res) => {
+    User.create(
+      {
+        admin: false,
+        username: req.body['username'],
+        password: req.body['password'],
+      }, (err, user) => {
+        if (err) res.send('Error');
+        else res.send('Done');
+      });
+  });
+
+
+  app.post('/listUser', (req, res) => {
     User.find({}, (err, list) => {
       if (err) console.log(err);
       else res.send(list);
     });
   });
 
-  app.get('/deleteAllUSer', (req, res) => {
-    User.deleteMany({}, (err) => {
+  app.post('/findUser', (req, res) => {
+    console.log('hi')
+    let temp = {};
+    req.body['username'] ? (temp['username'] = req.body['username']) : null;
+    req.body['password'] ? (temp['password'] = req.body['password']) : null;
+    temp['admin'] = false;
+    console.log(temp);
+    User.find(temp, (err, user) => {
+      console.log(user);
       if (err) console.log(err);
-      else res.send('done');
+      else res.send(user);
     });
   });
 
-  app.get('/createAdmin', (req, res) => {
+  app.post('/updatePassword', (req, res) => {
+    User.findOneAndUpdate({
+      username: req.body['username'],
+    }, {
+      password: req.body['password'],
+    } , (err, user) => {
+      console.log(user);
+      if (err) res.send("Error");
+      else if (user) res.send("Done");
+      else res.send("No such record");
+    });
+  });
+
+  app.post('/deleteUser', (req, res) => {
+    User.deleteMany({ username: req.body['username'], password: req.body['password'], }, (err, user) => {
+      if (err) res.send("Error");
+      else if (user.deletedCount) res.send('done');
+      else res.send('No such record');
+    });
+  });
+
+  app.post('/createAdmin', (req, res) => {
     User.create(
       {
         admin: true,
         username: 'admin',
         password: 'admin',
       },
-      () => res.send('Done')
+      () => res.status(200).send('Done')
     );
   });
 
@@ -184,5 +333,7 @@ db.once('open', function () {
   })
   //app.get('/*', (req, res) => res.send('Success'));
 });
+
+
 
 const server = app.listen(80);

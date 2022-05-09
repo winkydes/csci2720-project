@@ -35,7 +35,10 @@ function LoginPage(props) {
         setPasswordValid(res.passwordVerified);
         if (res.passwordVerified && res.usernameVerified){
           props.callback(true);
-        } 
+          if (res.isAdmin === true) {
+            props.callbackA(true);
+          }
+        }
         else console.log('you have inputted the wrong info');
       })
   };
