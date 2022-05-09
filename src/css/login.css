@@ -12,3 +12,13 @@ body {
     border-radius: 6px;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);
 }
+
+.register {
+    background-color: #fff;
+    max-width: 400px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 6px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, .1);
+}
