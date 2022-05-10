@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {MDBDataTable} from 'mdbreact'
 
 function Table(props){
-    console.log(props.data)
+    //console.log(props.data)
     return (
         <MDBDataTable
         striped

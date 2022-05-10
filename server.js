@@ -18,6 +18,7 @@ const url_list = [humidity_csv_url, air_csv_url, wind_csv_url]
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
+
 // Use CORS
 app.use(cors({ origin: '*' }));
 
@@ -71,6 +72,36 @@ db.once('open', function () {
   });
 
   const Location = mongoose.model('Location', LocationSchema);
+
+  
+  // const DataSchema = mongoose.Schema({
+  //   temp: {
+  //     type: String,
+  //     required: true,
+  //   },
+  //   direction: {
+  //     type: String,
+  //     required: true,
+  //   },
+  //   speed: {
+  //     type: String,
+  //     required: true,
+  //   },
+  //   gust: {
+  //     type: String,
+  //     required: true,
+  //   },
+  //   humid: {
+  //     type: String,
+  //     required: true,
+  //   },
+
+  //   location: {
+  //     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
+  //   },
+  // });
+
+  // const Data = mongoose.model('Data', DataSchema);
 
   const UserSchema = mongoose.Schema({
     admin: {
@@ -152,7 +183,7 @@ db.once('open', function () {
       // () => res.send('Done'),
       // () => res.send('Error')
       (err, loc) =>  {
-        if (err) res.send('Error');
+        if (err) res.send('Error1');
         else res.send('Done');
       }
     );
@@ -313,7 +344,7 @@ db.once('open', function () {
     );
   });
 
-  // ref from : https://github.com/mholt/PapaParse/issues/440
+  // ref from : https://github.com/mholt/PapaParse/issues/440, update data on database
   app.get('/home',(req, res) => {
     let data = [];
     let i = 0
@@ -329,19 +360,13 @@ db.once('open', function () {
       dataStream.on("finish", () => {
       console.log(data);
       console.log(data.length);
-      // make sure that all data is obtained correctly (not sure why sometimes not getting all data if used i == 2 )
-      if (data.length==92){
-        res.send(data)
-      }
+      res.send(data)
       i++;
       })
       }
     i++;
     }
-
-  
-    //res.send(data)
-  })
+    })
   //app.get('/*', (req, res) => res.send('Success'));
 });
 
