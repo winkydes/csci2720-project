@@ -341,6 +341,7 @@ function Admin() {
         }
     }
 
+    // when fetch_data is called, the data of the table is updated from the fetched csv directly
     function fetch_data(){
         fetch('http://localhost/home',{
           method: 'GET',

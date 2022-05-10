@@ -12,8 +12,9 @@ function Home(props) {
   const [gust_list, setGustList] = React.useState(new Array(49).fill('N/A'));
   const [humid_list, setHumidList] = React.useState(new Array(49).fill('N/A'));
 
+  // when fetch_data is called, data from database is fetched and displayed
   function fetch_data(){
-    fetch('http://localhost/home',{
+    fetch('http://localhost/userhome',{
       method: 'GET',
       // mode: 'cors',
       headers: {
@@ -23,57 +24,22 @@ function Home(props) {
       .then((res) => res.json())
       .then((res) => {
         // store all location into a list, later set data according to thi list
-        let i = 0
-        while(i<res.length){
-          if (res[i][0]!='Date time' && !location_list.includes(res[i][1])){
-            location_list.push(res[i][1])
-          }
-          setLocationList(location_list)
-          i++;
-        }
-        console.log("location list:", location_list)
-        // getting data according to the locations
-        let toGet = null
-        let k = 0
-        while(k<92){
-          // change the target data if encounter a Date Time line
-          if (res[k][0]=='Date time'
-          ){
-            if (res[k][2]=="Air Temperature(degree Celsius)"){
-              toGet = 'temp'
-              k++
-            }
-            if (res[k][2]=="10-Minute Mean Wind Direction(Compass points)"){
-              toGet = 'wind'
-              k++
-            }
-            if (res[k][2]=="Relative Humidity(percent)"){
-              toGet = 'humid'
-              k++
-            }
-          }
-          else{
-          // toGet target data and allocate to the corresponding index
-          let index = location_list.indexOf(res[k][1])
-          if (toGet == 'temp'){
-            temp_list[index] = res[k][2]
-          }
-          if (toGet == 'wind'){
-            gust_list[index] = res[k][4]
-            speed_list[index] = res[k][3]
-            direction_list[index] = res[k][2]
-          }
-          if (toGet == 'humid'){
-            humid_list[index] = res[k][2]
-          }
-          k++
-          }
-          // setting list inside loop
+        console.log("HOMEJS,",res[0].gust)
+        console.log(location_list.length)
+        for (var k=0; k<49; k++){
+          console.log(k)
+          gust_list.push(res[k].gust)
+          temp_list.push(res[k].temp)
+          direction_list.push(res[k].direction)
+          humid_list.push(res[k].humid)
+          speed_list.push(res[k].speed)
+          location_list.push(res[k].location)
           setGustList(gust_list)
           setTempList(temp_list)
           setHumidList(humid_list)
           setSpeedList(speed_list)
           setDirectionList(direction_list)
+          setLocationList(location_list)
         }//endOf while
         console.log(gust_list)
         console.log(location_list.length)

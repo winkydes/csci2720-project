@@ -74,34 +74,35 @@ db.once('open', function () {
   const Location = mongoose.model('Location', LocationSchema);
 
   
-  // const DataSchema = mongoose.Schema({
-  //   temp: {
-  //     type: String,
-  //     required: true,
-  //   },
-  //   direction: {
-  //     type: String,
-  //     required: true,
-  //   },
-  //   speed: {
-  //     type: String,
-  //     required: true,
-  //   },
-  //   gust: {
-  //     type: String,
-  //     required: true,
-  //   },
-  //   humid: {
-  //     type: String,
-  //     required: true,
-  //   },
+  const DataSchema = mongoose.Schema({
+    temp: {
+      type: String,
+      required: true,
+    },
+    direction: {
+      type: String,
+      required: true,
+    },
+    speed: {
+      type: String,
+      required: true,
+    },
+    gust: {
+      type: String,
+      required: true,
+    },
+    humid: {
+      type: String,
+      required: true,
+    },
 
-  //   location: {
-  //     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
-  //   },
-  // });
+    location: {
+      type: String,
+      required:true
+    },
+  });
 
-  // const Data = mongoose.model('Data', DataSchema);
+  const Data = mongoose.model('Data', DataSchema);
 
   const UserSchema = mongoose.Schema({
     admin: {
@@ -183,7 +184,7 @@ db.once('open', function () {
       // () => res.send('Done'),
       // () => res.send('Error')
       (err, loc) =>  {
-        if (err) res.send('Error1');
+        if (err) res.send('Error');
         else res.send('Done');
       }
     );
@@ -358,8 +359,93 @@ db.once('open', function () {
     });
     if (i == 2){
       dataStream.on("finish", () => {
-      console.log(data);
+      console.log(data[0]);
       console.log(data.length);
+      let i = 0
+
+      location_list = [];
+      temp_list = new Array(49).fill('N/A')
+      direction_list = new Array(49).fill('N/A')
+      speed_list = new Array(49).fill('N/A')
+      gust_list = new Array(49).fill('N/A')
+      humid_list = new Array(49).fill('N/A')
+
+      while(i<data.length){
+        if (data[i][0]!='Date time' && !location_list.includes(data[i][1])){
+          location_list.push(data[i][1])
+        }
+        i++;
+      }
+      console.log("location list:", location_list)
+      // getting data according to the locations
+      let toGet = null
+      let k = 0
+      while(k<data.length){
+        // change the target data if encounter a Date Time line
+        if (data[k][0]=='Date time'
+        ){
+          if (data[k][2]=="Air Temperature(degree Celsius)"){
+            toGet = 'temp'
+            k++
+          }
+          if (data[k][2]=="10-Minute Mean Wind Direction(Compass points)"){
+            toGet = 'wind'
+            k++
+          }
+          if (data[k][2]=="Relative Humidity(percent)"){
+            toGet = 'humid'
+            k++
+          }
+        }
+        else{
+        // toGet target data and allocate to the corresponding index
+        let index = location_list.indexOf(data[k][1])
+        if (toGet == 'temp'){
+          temp_list[index] = data[k][2]
+        }
+        if (toGet == 'wind'){
+          gust_list[index] = data[k][4]
+          speed_list[index] = data[k][3]
+          direction_list[index] = data[k][2]
+        }
+        if (toGet == 'humid'){
+          humid_list[index] = data[k][2]
+        }
+        k++
+        }
+      }//endOf while
+      console.log(gust_list)
+      console.log(location_list.length)
+
+      for (var p = 0; p < location_list.length; p++){
+        Data.findOneAndUpdate({
+          location: location_list[p],
+        }, {
+          temp: temp_list[p],
+          direction: direction_list[p],
+          speed: speed_list[p],
+          gust: gust_list[p],
+          humid: humid_list[p]
+        }, (err, location) => {
+          if (err) console.log("error");
+          else console.log("Done")
+        })
+      }
+      
+      // for (var p = 0; p < location_list.length; p++){
+      //   Data.create({
+      //     location: location_list[p],
+      //     temp: temp_list[p],
+      //     direction: direction_list[p],
+      //     speed: speed_list[p],
+      //     gust: gust_list[p],
+      //     humid: humid_list[p]
+      //   }, (err, location) => {
+      //     if (err) console.log("error");
+      //     else console.log("Done")
+      //   })
+      // }
+      ///////////////////////////
       res.send(data)
       i++;
       })
@@ -367,7 +453,16 @@ db.once('open', function () {
     i++;
     }
     })
+  
+  app.get('/userhome', (req,res)=>{
+    Data.find({},(err,list)=>{
+      if (err) console.log(err);
+      else res.send(list);
+      console.log(list);
+    })
+  })
   //app.get('/*', (req, res) => res.send('Success'));
+  
 });
 
 
