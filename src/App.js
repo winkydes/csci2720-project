@@ -14,8 +14,9 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Navigate replace to="/login" />} />
-        <Route path="/home" element={isLogIn && !isAdmin ? <Home callback={setIsLogIn.bind(this)} /> : isLogIn && isAdmin ? <Admin callback={setIsLogIn.bind(this)} /> : <Navigate replace to="/login" />} />
-        <Route path="/login" element={isLogIn? <Navigate replace to="/home" /> : <LoginPage callback={setIsLogIn.bind(this)} callbackA={setIsAdmin.bind(this)} />} />
+        <Route path="/home" element={isLogIn? <Home callback={setIsLogIn.bind(this)} /> : <Navigate replace to="/login" />} />
+        <Route path="/admin" element={isLogIn && isAdmin ? <Admin /> : <Navigate replace to="/login" />} />
+        <Route path="/login" element={<LoginPage loginCallback={setIsLogIn.bind(this)} adminCallback={setIsAdmin.bind(this)} />} />
         <Route path="/register" element={isLogIn? <Navigate replace to="/home" /> : <RegisterPage callback={setIsLogIn.bind(this)} />} />
       </Routes>
     </div>

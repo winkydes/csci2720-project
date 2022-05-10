@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css/login.css';
 
 function LoginPage(props) {
@@ -7,6 +7,8 @@ function LoginPage(props) {
   const [password, setPassword] = React.useState('');
   const [isUsernameValid, setUsernameValid] = React.useState(true);
   const [isPasswordValid, setPasswordValid] = React.useState(true);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     // Prevent page reload
@@ -34,10 +36,12 @@ function LoginPage(props) {
         setUsernameValid(res.usernameVerified);
         setPasswordValid(res.passwordVerified);
         if (res.passwordVerified && res.usernameVerified){
-          props.callback(true);
+          props.loginCallback(true);
           if (res.isAdmin === true) {
-            props.callbackA(true);
+            props.adminCallback(true);
+            navigate('/admin');
           }
+          else navigate('/home');
         }
         else console.log('you have inputted the wrong info');
       })
