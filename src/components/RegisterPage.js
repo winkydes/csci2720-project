@@ -66,7 +66,9 @@ function RegisterPage(props) {
           <div className="mb-3">
             {/* <label className="me-2">Username:</label> */}
             <input
-              className={`border rounded ${isUsernameValid ? 'form-control border-dark' : 'form-control border-danger'}`}
+              className={`border rounded ${
+                isUsernameValid ? 'form-control border-dark' : 'form-control border-danger'
+              }`}
               placeholder="User Name: 4-20 character"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -78,7 +80,9 @@ function RegisterPage(props) {
           <div className="mb-3">
             {/* <label className="me-2">Password:</label> */}
             <input
-              className={`border rounded ${isPasswordValid ? 'form-control border-dark' : 'form-control border-danger'}`}
+              className={`border rounded ${
+                isPasswordValid ? 'form-control border-dark' : 'form-control border-danger'
+              }`}
               placeholder="Password: 4-20 character"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -87,7 +91,9 @@ function RegisterPage(props) {
           </div>
 
           <div class="mb-3">
-            <button class="btn btn-primary d-block w-100" type="submit">Register</button>
+            <button class="btn btn-primary d-block w-100" type="submit">
+              Register
+            </button>
             {/* <input className="mt-2" type="submit" /> */}
           </div>
         </form>

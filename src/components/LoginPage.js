@@ -35,16 +35,14 @@ function LoginPage(props) {
       .then((res) => {
         setUsernameValid(res.usernameVerified);
         setPasswordValid(res.passwordVerified);
-        if (res.passwordVerified && res.usernameVerified){
+        if (res.passwordVerified && res.usernameVerified) {
           props.loginCallback(true);
           if (res.isAdmin === true) {
             props.adminCallback(true);
             navigate('/admin');
-          }
-          else navigate('/home');
-        }
-        else console.log('you have inputted the wrong info');
-      })
+          } else navigate('/home');
+        } else console.log('you have inputted the wrong info');
+      });
   };
 
   return (
@@ -57,7 +55,9 @@ function LoginPage(props) {
           <div className="mb-3">
             {/* <label className="me-2">Username:</label> */}
             <input
-              className={`border rounded ${isUsernameValid ? 'form-control border-dark' : 'form-control border-danger'}`}
+              className={`border rounded ${
+                isUsernameValid ? 'form-control border-dark' : 'form-control border-danger'
+              }`}
               placeholder="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -69,7 +69,9 @@ function LoginPage(props) {
           <div className="mb-3">
             {/* <label className="me-2">Password:</label> */}
             <input
-              className={`border rounded ${isPasswordValid ? 'form-control border-dark' : 'form-control border-danger'}`}
+              className={`border rounded ${
+                isPasswordValid ? 'form-control border-dark' : 'form-control border-danger'
+              }`}
               placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -78,7 +80,9 @@ function LoginPage(props) {
           </div>
 
           <div class="mb-3">
-            <button class="btn btn-primary d-block w-100" type="submit">Log In</button>
+            <button class="btn btn-primary d-block w-100" type="submit">
+              Log In
+            </button>
             {/* <input className="mt-2" type="submit" /> */}
           </div>
         </form>

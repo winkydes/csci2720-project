@@ -16,11 +16,32 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Navigate replace to="/login" />} />
-        <Route path="/home" element={isLogIn? <Home callback={setIsLogIn.bind(this)} /> : <Navigate replace to="/login" />} />
-        <Route path="/admin" element={isLogIn && isAdmin ? <Admin loginCallback={setIsLogIn.bind(this)} adminCallback={setIsAdmin.bind(this)}/> : <Navigate replace to="/login" />} />
-        <Route path="/login" element={<LoginPage loginCallback={setIsLogIn.bind(this)} adminCallback={setIsAdmin.bind(this)} />} />
-        <Route path="/register" element={isLogIn? <Navigate replace to="/home" /> : <RegisterPage callback={setIsLogIn.bind(this)} />} />
-        <Route path="/locationDetail" element={isLogIn ? <LocationDetail username={username} /> : <Navigate replace to="/login" />} />
+        <Route
+          path="/home"
+          element={isLogIn ? <Home callback={setIsLogIn.bind(this)} /> : <Navigate replace to="/login" />}
+        />
+        <Route
+          path="/admin"
+          element={
+            isLogIn && isAdmin ? (
+              <Admin loginCallback={setIsLogIn.bind(this)} adminCallback={setIsAdmin.bind(this)} />
+            ) : (
+              <Navigate replace to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={<LoginPage loginCallback={setIsLogIn.bind(this)} adminCallback={setIsAdmin.bind(this)} />}
+        />
+        <Route
+          path="/register"
+          element={isLogIn ? <Navigate replace to="/home" /> : <RegisterPage callback={setIsLogIn.bind(this)} />}
+        />
+        <Route
+          path="/locationDetail"
+          element={isLogIn ? <LocationDetail username={username} /> : <Navigate replace to="/login" />}
+        />
       </Routes>
     </div>
   );
