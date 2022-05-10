@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import '../css/admin.css';
 import Table from './Table'
-function Admin() {
+function Admin(props) {
     const [long, setLong] = React.useState('');
     const [lat, setLat] = React.useState('');
     const [name, setName] = React.useState('');
@@ -23,6 +24,8 @@ function Admin() {
     const [speed_list, setSpeedList] = React.useState(new Array(49).fill('N/A'));
     const [gust_list, setGustList] = React.useState(new Array(49).fill('N/A'));
     const [humid_list, setHumidList] = React.useState(new Array(49).fill('N/A'));
+
+    const navigate = useNavigate();
 
     // locations functions
     const changeLocationState = (data) => {
@@ -479,6 +482,12 @@ function Admin() {
           })
       }
     
+    function logout() {
+        props.loginCallback(false);
+        props.adminCallback(false);
+        navigate('/login');
+    }  
+
     return (
         <div>
             <section className="location-form">
@@ -586,6 +595,7 @@ function Admin() {
             </section>
             <div>
             <button onClick={() => fetch_data()}>Fetch data</button>
+            <button onClick={() => logout()}>Logout</button>
             <Table data={tableData}/>
             </div>
         </div>
