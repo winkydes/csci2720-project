@@ -11,12 +11,15 @@ require('dotenv').config();
 
 const app = express();
 const uri = process.env.MONGODB_URI;
-const humidity_csv_url = 'https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv';
-const wind_csv_url = 'https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv';
-const air_csv_url = 'https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv';
+
+const humidity_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv"
+const wind_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv"
+const air_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv"
+const url_list = [humidity_csv_url, air_csv_url, wind_csv_url]
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
+
 
 // Use CORS
 app.use(cors({ origin: '*' }));
@@ -71,6 +74,37 @@ db.once('open', function () {
   });
 
   const Location = mongoose.model('Location', LocationSchema);
+
+  
+  const DataSchema = mongoose.Schema({
+    temp: {
+      type: String,
+      required: true,
+    },
+    direction: {
+      type: String,
+      required: true,
+    },
+    speed: {
+      type: String,
+      required: true,
+    },
+    gust: {
+      type: String,
+      required: true,
+    },
+    humid: {
+      type: String,
+      required: true,
+    },
+
+    location: {
+      type: String,
+      required:true
+    },
+  });
+
+  const Data = mongoose.model('Data', DataSchema);
 
   const UserSchema = mongoose.Schema({
     admin: {
@@ -135,6 +169,7 @@ db.once('open', function () {
         res.send({
           passwordVerified: user.password === req.body['password'],
           usernameVerified: true,
+          isAdmin: user.admin,
         });
     });
   });
@@ -171,81 +206,296 @@ db.once('open', function () {
         }
       });
   });
+  
+  //  location data CRUD
+  app.post('/createLocation', (req, res) => {
+    Location.create(
+      {
+        latitude: req.body['lat'],
+        longtitude: req.body['long'],
+        name: req.body['name'],
+        },
+      // () => res.send('Done'),
+      // () => res.send('Error')
+      (err, loc) =>  {
+        if (err) res.send('Error');
+        else res.send('Done');
+      }
+    );
+    
 
-  app.get('/listUser', (req, res) => {
+  });
+
+  // app.post('/createLocation', (req, res) => {
+  //   let myData = new Location({
+  //     latitude: req.body['lat'],
+  //     longtitude: req.body['long'],
+  //     name: req.body['name'],
+  //   });
+
+  //   myData.save(err)
+  //     .then((meg) => {
+  //       console.log(meg);
+  //       res.send('Done');
+  //     })
+  // })
+  
+  app.post('/listLocation', (req, res) => {
+    Location.find({}, (err, list) => {
+      if (err) console.log(err);
+      else res.send(list);
+      console.log(list);
+    });
+  });
+
+  app.post('/findLocation', (req, res) => {
+    let temp = {};
+    req.body['lat'] ? (temp['latitude'] = req.body['lat']) : null;
+    req.body['long'] ? (temp['longtitude'] = req.body['long']) : null;
+    req.body['name'] ? (temp['name'] = req.body['name']) : null;
+
+      console.log(temp);
+    Location.find(
+      temp , (err, location) => {
+        console.log(location);
+      if (err) console.log(err);
+      else res.send(location);
+    });
+  });
+  
+  app.post('/updateLat', (req, res) => {
+    Location.findOneAndUpdate({
+      longtitude: req.body['long'],
+      name: req.body['name'],
+    }, {
+      latitude: req.body['lat'],
+    }, (err, location) => {
+      if (err) res.send("Error");
+      else if (location) res.send("Done");
+      else res.send("No such record");
+    });
+  });
+  
+  app.post('/updateLong', (req, res) => {
+    Location.findOneAndUpdate({
+      latitude: req.body['lat'],
+      name: req.body['name'],
+    }, {
+      longtitude: req.body['long'],
+    }, (err, location) => {
+      if (err) res.send("Error");
+      else if (location) res.send("Done");
+      else res.send("No such record");
+    });
+  });
+
+  app.post('/updateName', (req, res) => {
+    Location.findOneAndUpdate({
+      latitude: req.body['lat'],
+      longtitude: req.body['long'],
+    }, {
+      name: req.body['name'],
+    }, (err, location) => {
+      if (err) res.send("Error");
+      else if (location) res.send("Done");
+      else res.send("No such record");
+    });
+  });
+
+  app.post('/deleteLocation', (req, res) => {
+    Location.deleteMany({ latitude: req.body['lat'], longtitude: req.body['long'], name: req.body['name'], }, (err, location) => {
+      if (err) res.send("Error");
+      else if (location.deletedCount) res.send('done');
+      else res.send('No such record');
+    });
+  });
+
+  // user CRUD
+  app.post('/createUserAdmin', (req, res) => {
+    User.create(
+      {
+        admin: false,
+        username: req.body['username'],
+        password: req.body['password'],
+      }, (err, user) => {
+        if (err) res.send('Error');
+        else res.send('Done');
+      });
+  });
+
+  app.post('/listUser', (req, res) => {
     User.find({}, (err, list) => {
       if (err) console.log(err);
       else res.send(list);
     });
   });
 
-  app.get('/listLocation', (req, res) => {
-    Location.find({}, (err, list) => {
+  app.post('/findUser', (req, res) => {
+    console.log('hi')
+    let temp = {};
+    req.body['username'] ? (temp['username'] = req.body['username']) : null;
+    req.body['password'] ? (temp['password'] = req.body['password']) : null;
+    temp['admin'] = false;
+    console.log(temp);
+    User.find(temp, (err, user) => {
+      console.log(user);
       if (err) console.log(err);
-      else res.send(list);
+      else res.send(user);
     });
   });
 
-  app.get('/listComment', (req, res) => {
-    Comment.find({}, (err, list) => {
-      if (err) console.log(err);
-      else res.send(list);
+  app.post('/updatePassword', (req, res) => {
+    User.findOneAndUpdate({
+      username: req.body['username'],
+    }, {
+      password: req.body['password'],
+    } , (err, user) => {
+      console.log(user);
+      if (err) res.send("Error");
+      else if (user) res.send("Done");
+      else res.send("No such record");
     });
   });
 
-  app.get('/createTestLocation', (req, res) => {
-    Location.create({ latitude: 0, longtitude: 0, name: 'testLocation', comments: [] }, () => res.send('ok'));
-  });
-
-  app.get('/deleteAllUser', (req, res) => {
-    User.deleteMany({}, (err) => {
-      if (err) console.log(err);
-      else res.send('done');
+  app.post('/deleteUser', (req, res) => {
+    User.deleteMany({ username: req.body['username'], password: req.body['password'], }, (err, user) => {
+      if (err) res.send("Error");
+      else if (user.deletedCount) res.send('done');
+      else res.send('No such record');
     });
   });
 
-  app.get('/deleteComment', (req, res) => {
-    Comment.deleteMany({}, (err) => {
-      if (err) console.log(err);
-      else res.send('done');
-    });
-  });
-
-  app.get('/deleteTestLocation', (req, res) => {
-    Location.deleteOne({ name: 'testLocation' }, (err) => {
-      if (err) console.log(err);
-      else res.send('done');
-    });
-  });
-
-  app.get('/createAdmin', (req, res) => {
+  app.post('/createAdmin', (req, res) => {
     User.create(
       {
         admin: true,
         username: 'admin',
         password: 'admin',
       },
-      () => res.send('Done')
+      () => res.status(200).send('Done')
     );
   });
 
-  // ref from : https://github.com/mholt/PapaParse/issues/440
-  app.get('/home', (req, res) => {
-    const parseStream = papa.parse(papa.NODE_STREAM_INPUT, { download: true });
-    const dataStream = request.get(humidity_csv_url).pipe(parseStream);
+  // ref from : https://github.com/mholt/PapaParse/issues/440, update data on database
+  app.get('/home',(req, res) => {
     let data = [];
-    parseStream.on('data', (chunk) => {
-      data.push(chunk);
+    let i = 0
+    while (i<3){
+    const parseStream = papa.parse(papa.NODE_STREAM_INPUT,{download: true,})
+    const dataStream = request
+      .get(url_list[i])
+      .pipe(parseStream);
+    parseStream.on("data", chunk => {
+        data.push(chunk);
     });
-
-    dataStream.on('finish', () => {
-      console.log(data);
+    if (i == 2){
+      dataStream.on("finish", () => {
+      console.log(data[0]);
       console.log(data.length);
-      res.send(data);
-    });
-    //res.send(data)
-  });
+      let i = 0
+
+      location_list = [];
+      temp_list = new Array(49).fill('N/A')
+      direction_list = new Array(49).fill('N/A')
+      speed_list = new Array(49).fill('N/A')
+      gust_list = new Array(49).fill('N/A')
+      humid_list = new Array(49).fill('N/A')
+
+      while(i<data.length){
+        if (data[i][0]!='Date time' && !location_list.includes(data[i][1])){
+          location_list.push(data[i][1])
+        }
+        i++;
+      }
+      console.log("location list:", location_list)
+      // getting data according to the locations
+      let toGet = null
+      let k = 0
+      while(k<data.length){
+        // change the target data if encounter a Date Time line
+        if (data[k][0]=='Date time'
+        ){
+          if (data[k][2]=="Air Temperature(degree Celsius)"){
+            toGet = 'temp'
+            k++
+          }
+          if (data[k][2]=="10-Minute Mean Wind Direction(Compass points)"){
+            toGet = 'wind'
+            k++
+          }
+          if (data[k][2]=="Relative Humidity(percent)"){
+            toGet = 'humid'
+            k++
+          }
+        }
+        else{
+        // toGet target data and allocate to the corresponding index
+        let index = location_list.indexOf(data[k][1])
+        if (toGet == 'temp'){
+          temp_list[index] = data[k][2]
+        }
+        if (toGet == 'wind'){
+          gust_list[index] = data[k][4]
+          speed_list[index] = data[k][3]
+          direction_list[index] = data[k][2]
+        }
+        if (toGet == 'humid'){
+          humid_list[index] = data[k][2]
+        }
+        k++
+        }
+      }//endOf while
+      console.log(gust_list)
+      console.log(location_list.length)
+
+      for (var p = 0; p < location_list.length; p++){
+        Data.findOneAndUpdate({
+          location: location_list[p],
+        }, {
+          temp: temp_list[p],
+          direction: direction_list[p],
+          speed: speed_list[p],
+          gust: gust_list[p],
+          humid: humid_list[p]
+        }, (err, location) => {
+          if (err) console.log("error");
+          else console.log("Done")
+        })
+      }
+      
+      // for (var p = 0; p < location_list.length; p++){
+      //   Data.create({
+      //     location: location_list[p],
+      //     temp: temp_list[p],
+      //     direction: direction_list[p],
+      //     speed: speed_list[p],
+      //     gust: gust_list[p],
+      //     humid: humid_list[p]
+      //   }, (err, location) => {
+      //     if (err) console.log("error");
+      //     else console.log("Done")
+      //   })
+      // }
+      ///////////////////////////
+      res.send(data)
+      i++;
+      })
+      }
+    i++;
+    }
+    })
+  
+  app.get('/userhome', (req,res)=>{
+    Data.find({},(err,list)=>{
+      if (err) console.log(err);
+      else res.send(list);
+      console.log(list);
+    })
+  })
   //app.get('/*', (req, res) => res.send('Success'));
+  
 });
+
+
 
 const server = app.listen(80);
