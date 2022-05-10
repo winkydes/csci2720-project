@@ -2,11 +2,17 @@ import React from 'react';
 import CommentBlock from './CommentBlock';
 
 function LocationDetail(props) {
-  const handleSubmit = (event) => {
+  const [comment, setComment] = React.useState('');
+  const [commentData, setCommentData] = React.useState([]);
+
+  // the location name has to change to props.location, to be handled when navigation is done
+  const handleSubmit = async (event) => {
     event.preventDefault();
     let submission = document.getElementById('comment').value;
     if (submission === '') return;
-    fetch('http://localhost/postComment', {
+    document.getElementById('comment').value = '';
+    await setComment((comment) => (comment = submission));
+    await fetch('http://localhost/postComment', {
       method: 'POST',
       body: JSON.stringify({
         location: 'testLocation',
@@ -22,6 +28,21 @@ function LocationDetail(props) {
       .then((res) => res.json())
       .then((res) => console.log(res.success));
   };
+
+  React.useEffect(() => {
+    fetch('http://localhost/fetchComment/testLocation', {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setCommentData((commentData) => (commentData = res));
+      });
+  }, [commentData, comment]);
 
   return (
     <div className="h-100 d-flex flex-column">
@@ -42,7 +63,11 @@ function LocationDetail(props) {
           </div>
           <div id="commentSession" className="col-6 bg-secondary bg-gradient" style={{ textAlign: 'left' }}>
             <h3>Comments</h3>
-            <CommentBlock />
+            {commentData !== null ? (
+              commentData.map((item) => <CommentBlock key={item.id} comment={item} />)
+            ) : (
+              <p>There are no comments yet.</p>
+            )}
             <form className="my-2 d-flex flex-row align-items-center" onSubmit={handleSubmit}>
               <textarea id="comment" className="me-2 w-75 h-25" type="text" placeholder="Comment..." />
               <input type="submit" className="h-25" value="Comment" />

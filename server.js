@@ -160,6 +160,18 @@ db.once('open', function () {
     );
   });
 
+  // fetch comment
+  app.get('/fetchComment/:location', (req, res) => {
+    Location.findOne({ name: req.params['location'] })
+      .populate('comments')
+      .exec((err, loc) => {
+        if (err) console.log(err);
+        else {
+          res.send(loc.comments);
+        }
+      });
+  });
+
   app.get('/listUser', (req, res) => {
     User.find({}, (err, list) => {
       if (err) console.log(err);
@@ -199,8 +211,8 @@ db.once('open', function () {
     });
   });
 
-  app.get('/deleteLocation', (req, res) => {
-    Location.deleteMany({}, (err) => {
+  app.get('/deleteTestLocation', (req, res) => {
+    Location.deleteOne({ name: 'testLocation' }, (err) => {
       if (err) console.log(err);
       else res.send('done');
     });
