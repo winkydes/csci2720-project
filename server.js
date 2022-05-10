@@ -4,17 +4,19 @@ const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const papa = require("papaparse");
-const request = require("request");
+const papa = require('papaparse');
+const request = require('request');
 
 require('dotenv').config();
 
 const app = express();
 const uri = process.env.MONGODB_URI;
+
 const humidity_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv"
 const wind_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv"
 const air_csv_url = "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv"
 const url_list = [humidity_csv_url, air_csv_url, wind_csv_url]
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -172,7 +174,39 @@ db.once('open', function () {
     });
   });
 
+  // submit comment
+  app.post('/postComment', (req, res) => {
+    Comment.create(
+      { username: req.body['username'], content: req.body['content'], date: Date.now() },
+      (err, newComment) => {
+        if (err) console.log(err);
+        else {
+          console.log(req.body['location']);
+          Location.findOneAndUpdate(
+            { name: req.body['location'] },
+            { $push: { comments: newComment } },
+            { new: true }
+          ).exec((err, loc) => {
+            if (err) console.log(err);
+            else res.send({ success: true });
+          });
+        }
+      }
+    );
+  });
 
+  // fetch comment
+  app.get('/fetchComment/:location', (req, res) => {
+    Location.findOne({ name: req.params['location'] })
+      .populate('comments')
+      .exec((err, loc) => {
+        if (err) console.log(err);
+        else {
+          res.send(loc.comments);
+        }
+      });
+  });
+  
   //  location data CRUD
   app.post('/createLocation', (req, res) => {
     Location.create(
@@ -205,9 +239,7 @@ db.once('open', function () {
   //       res.send('Done');
   //     })
   // })
-
-
-
+  
   app.post('/listLocation', (req, res) => {
     Location.find({}, (err, list) => {
       if (err) console.log(err);
@@ -290,7 +322,6 @@ db.once('open', function () {
         else res.send('Done');
       });
   });
-
 
   app.post('/listUser', (req, res) => {
     User.find({}, (err, list) => {

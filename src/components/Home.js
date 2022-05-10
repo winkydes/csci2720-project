@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 //import {usePapaParse} from 'react-papaparse'
 import Table from "./Table";
 
@@ -113,12 +114,13 @@ function Home(props) {
         })
       })
   }
-
+  
   return (
     <div>
       <div className="bg-light">This is homepage. Try commit.</div>
       <button onClick={() => props.callback(false)}>Logout</button>
       <button onClick={() => fetch_data()}>Fetch data</button>
+      <button onClick={() => navigate('../locationDetail')}>Check Location</button>
       <Table data={tableData}/>
     </div>);
 }
