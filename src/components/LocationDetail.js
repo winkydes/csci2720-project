@@ -53,11 +53,11 @@ function LocationDetail(props) {
       >
         This is where the map is located at.
       </div>
-      <div>
-        <h1 className="w-100 d-flex my-2 ms-2">Location Name</h1>
+      <div className="d-flex my-2 ms-2">
+        <h1>Location Name</h1>
       </div>
-      <div>
-        <div className="row">
+      <div className="d-flex w-100 align-items-center justify-content-center">
+        <div className="w-100 row">
           <div id="detailSession" className="col-6 bg-secondary" style={{ textAlign: 'left' }}>
             <h3 className="ms-2">Weather Details</h3>
           </div>

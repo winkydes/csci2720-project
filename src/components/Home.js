@@ -44,8 +44,6 @@ function Home(props) {
           setDirectionList(direction_list);
           setLocationList(location_list);
         } //endOf while
-        console.log(gust_list);
-        console.log(location_list.length);
         let j = 0;
         setDataList([]);
         while (j < location_list.length) {
@@ -70,7 +68,6 @@ function Home(props) {
           setDataList(data_list);
           j++;
         }
-        console.log(data_list);
         setTableData({
           columns: [
             {
@@ -114,7 +111,7 @@ function Home(props) {
         });
       });
   }
-  useEffect(fetch_data, [data_list])
+  useEffect(fetch_data, [data_list, direction_list, gust_list, humid_list, location_list, speed_list, temp_list])
   return (
     <div>
       <div className="bg-light">This is homepage. Try commit.</div>
