@@ -509,6 +509,30 @@ db.once('open', function () {
       else res.send(list);
     });
   });
+
+  app.get('/fetchLocationDetails/:location', (req, res) => {
+    let details = {};
+    Data.findOne({location: req.params['location']}, (err, loc) => {
+      if (err) console.log(err);
+      else if (loc === null) console.log("null");
+      else {
+        details = {
+          temp: loc.temp,
+          direction: loc.direction,
+          speed: loc.speed,
+          gust: loc.gust,
+          humid: loc.humid,
+        };
+        Location.findOne({location:req.params['location']}, (err, loc) => {
+          if (err) console.log(err);
+          else {
+            details = {...details, latitude: loc.latitude, longtitude: loc.longtitude };
+            res.send(details);
+          }
+        });
+      }
+    });
+  })
   //app.get('/*', (req, res) => res.send('Success'));
 });
 

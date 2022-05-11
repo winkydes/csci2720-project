@@ -116,7 +116,6 @@ function Home(props) {
     <div>
       <div className="bg-light">This is homepage. Try commit.</div>
       <button onClick={() => props.callback(false)}>Logout</button>
-      <button onClick={() => navigate('../locationDetail')}>Check Location</button>
       <Table data={tableData} />
     </div>
   );
