@@ -507,7 +507,6 @@ db.once('open', function () {
     Data.find({}, (err, list) => {
       if (err) console.log(err);
       else res.send(list);
-      console.log(list);
     });
   });
   //app.get('/*', (req, res) => res.send('Success'));

@@ -39,8 +39,12 @@ function LoginPage(props) {
           props.loginCallback(true);
           if (res.isAdmin === true) {
             props.adminCallback(true);
+            props.usernameCallback('admin')
             navigate('/admin');
-          } else navigate('/home');
+          } else {
+            props.usernameCallback(username);
+            navigate('/home');
+          }
         } else console.log('you have inputted the wrong info');
       });
   };

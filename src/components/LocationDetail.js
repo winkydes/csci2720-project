@@ -1,9 +1,13 @@
 import React from 'react';
 import CommentBlock from './CommentBlock';
+import { useParams } from 'react-router-dom'
 
 function LocationDetail(props) {
   const [comment, setComment] = React.useState('');
   const [commentData, setCommentData] = React.useState([]);
+
+  let { locationName } = useParams();
+  locationName = locationName.substring(1);
 
   // the location name has to change to props.location, to be handled when navigation is done
   const handleSubmit = async (event) => {
@@ -15,7 +19,7 @@ function LocationDetail(props) {
     await fetch('http://localhost/postComment', {
       method: 'POST',
       body: JSON.stringify({
-        location: 'testLocation',
+        location: locationName,
         username: props.username,
         content: submission,
       }),
@@ -30,7 +34,7 @@ function LocationDetail(props) {
   };
 
   React.useEffect(() => {
-    fetch('http://localhost/fetchComment/testLocation', {
+    fetch(`http://localhost/fetchComment/${locationName}`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -42,7 +46,7 @@ function LocationDetail(props) {
       .then((res) => {
         setCommentData((commentData) => (commentData = res));
       });
-  }, [commentData, comment]);
+  }, [commentData, comment, locationName]);
 
   return (
     <div className="h-100 d-flex flex-column">
@@ -54,7 +58,7 @@ function LocationDetail(props) {
         This is where the map is located at.
       </div>
       <div className="d-flex my-2 ms-2">
-        <h1>Location Name</h1>
+        <h1>{locationName}</h1>
       </div>
       <div className="d-flex w-100 align-items-center justify-content-center">
         <div className="w-100 row">

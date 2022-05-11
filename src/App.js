@@ -32,14 +32,14 @@ function App() {
         />
         <Route
           path="/login"
-          element={<LoginPage loginCallback={setIsLogIn.bind(this)} adminCallback={setIsAdmin.bind(this)} />}
+          element={<LoginPage loginCallback={setIsLogIn.bind(this)} adminCallback={setIsAdmin.bind(this)} usernameCallback={setUsername.bind(this)}/>}
         />
         <Route
           path="/register"
           element={isLogIn ? <Navigate replace to="/home" /> : <RegisterPage callback={setIsLogIn.bind(this)} />}
         />
         <Route
-          path="/locationDetail"
+          path="/locationDetail/:locationName"
           element={isLogIn ? <LocationDetail username={username} /> : <Navigate replace to="/login" />}
         />
       </Routes>

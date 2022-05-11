@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 //import {usePapaParse} from 'react-papaparse'
 import Table from './Table';
 
@@ -27,10 +27,9 @@ function Home(props) {
       .then((res) => res.json())
       .then((res) => {
         // store all location into a list, later set data according to thi list
-        console.log('HOMEJS,', res[0].gust);
-        console.log(location_list.length);
+        //console.log('HOMEJS,', res[0].gust);
+        //console.log(location_list.length);
         for (var k = 0; k < 49; k++) {
-          console.log(k);
           gust_list.push(res[k].gust);
           temp_list.push(res[k].temp);
           direction_list.push(res[k].direction);
@@ -46,6 +45,7 @@ function Home(props) {
         } //endOf while
         let j = 0;
         setDataList([]);
+        let list = []
         while (j < location_list.length) {
           // setDataList(curr => curr.push(
           //   {
@@ -57,17 +57,17 @@ function Home(props) {
           //     humid: humid_list[j]
           //   }
           // ))
-          data_list.push({
-            location: location_list[j],
+          list.push({
+            location: <Link to={{ pathname: `/locationDetail/:${location_list[j]}` }}>{location_list[j]}</Link>,
             temp: temp_list[j],
             direction: direction_list[j],
             speed: speed_list[j],
             gust: gust_list[j],
             humid: humid_list[j],
           });
-          setDataList(data_list);
           j++;
         }
+        setDataList(data_list => data_list = list);
         setTableData({
           columns: [
             {
@@ -116,7 +116,6 @@ function Home(props) {
     <div>
       <div className="bg-light">This is homepage. Try commit.</div>
       <button onClick={() => props.callback(false)}>Logout</button>
-      {/* <button onClick={() => fetch_data()}>Fetch data</button> */}
       <button onClick={() => navigate('../locationDetail')}>Check Location</button>
       <Table data={tableData} />
     </div>
