@@ -114,7 +114,9 @@ function Home(props) {
   return (
     <div>
       <Header username={props.username} />
-      <Table data={tableData} />
+      <div className='mx-3'>
+        <Table data={tableData} />
+      </div>
       <button className="btn btn-secondary" onClick={() => props.callback(false)}>
         Logout
       </button>
