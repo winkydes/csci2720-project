@@ -576,12 +576,10 @@ db.once('open', function () {
       if (err) console.log(err);
       else {
         User.findOne({ username: req.params['username'] })
-          .populate('favouriteLocation')
-          .exec((err, user) => {
+        .exec((err, user) => {
             if (err) console.log(err);
-            else if (user.favouriteLocation.find((element) => element.name === loc.name) === undefined) {
-              res.send({ isFavLoc: false });
-            } else res.send({ isFavLoc: true });
+            else if (user.favouriteLocation.includes(loc._id)) res.send({ isFavLoc: true });
+            else res.send({ isFavLoc: false });
           });
       }
     });
