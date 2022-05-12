@@ -74,6 +74,19 @@ db.once('open', function () {
 
   const Location = mongoose.model('Location', LocationSchema);
 
+  const LastUpdateSchema = mongoose.Schema({
+    date: {
+      type: String,
+      required: true,
+    },
+    time: {
+      type: String,
+      required: true,
+    },
+  });
+
+  const LastUpdate = mongoose.model('LastUpdate',LastUpdateSchema);
+
   const DataSchema = mongoose.Schema({
     temp: {
       type: String,
@@ -396,6 +409,23 @@ db.once('open', function () {
 
   // ref from : https://github.com/mholt/PapaParse/issues/440, update data on database
   app.get('/home', (req, res) => {
+    let currentDate = new Date();
+    console.log(currentDate.toDateString())
+    console.log( currentDate.toLocaleTimeString("en-US"))
+    // update last updated time on database
+    LastUpdate.findOneAndUpdate(
+      {
+        __v: 0,
+      },
+      {
+        date: currentDate.toDateString(),
+        time: currentDate.toLocaleTimeString("en-US"),
+      },
+      (err, update) => {
+        if (err) console.log('error');
+        else console.log('Done');
+      }
+    );
     let data = [];
     let i = 0;
     while (i < 3) {
@@ -506,7 +536,16 @@ db.once('open', function () {
   app.get('/userhome', (req, res) => {
     Data.find({}, (err, list) => {
       if (err) console.log(err);
-      else res.send(list);
+      else {
+        LastUpdate.find({}, (err,update) => {
+          if (err) console.log(err);
+          else {
+            let arr = [list, update]
+            console.log(arr)
+            res.send(arr);
+          }
+        })
+      }
     });
   });
 
