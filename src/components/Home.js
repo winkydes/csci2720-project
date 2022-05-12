@@ -16,6 +16,7 @@ function Home(props) {
 
   // when fetch_data is called, data from database is fetched and displayed
   function fetch_data() {
+    console.log("caling fetchdata")
     fetch('http://localhost/userhome', {
       method: 'GET',
       // mode: 'cors',
@@ -110,7 +111,7 @@ function Home(props) {
         });
       });
   }
-  useEffect(fetch_data, [data_list, direction_list, gust_list, humid_list, location_list, speed_list, temp_list]);
+  useEffect(fetch_data,[])
   return (
     <div>
       <Header username={props.username} />
