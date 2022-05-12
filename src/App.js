@@ -5,6 +5,7 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import LocationDetail from './components/LocationDetail';
 import Admin from './components/admin';
+import FavLocation from './components/FavLocation';
 import './App.css';
 
 function App() {
@@ -18,7 +19,9 @@ function App() {
         <Route path="/" element={<Navigate replace to="/login" />} />
         <Route
           path="/home"
-          element={isLogIn ? <Home callback={setIsLogIn.bind(this)} /> : <Navigate replace to="/login" />}
+          element={
+            isLogIn ? <Home callback={setIsLogIn.bind(this)} username={username} /> : <Navigate replace to="/login" />
+          }
         />
         <Route
           path="/admin"
@@ -32,7 +35,13 @@ function App() {
         />
         <Route
           path="/login"
-          element={<LoginPage loginCallback={setIsLogIn.bind(this)} adminCallback={setIsAdmin.bind(this)} usernameCallback={setUsername.bind(this)}/>}
+          element={
+            <LoginPage
+              loginCallback={setIsLogIn.bind(this)}
+              adminCallback={setIsAdmin.bind(this)}
+              usernameCallback={setUsername.bind(this)}
+            />
+          }
         />
         <Route
           path="/register"
@@ -41,6 +50,10 @@ function App() {
         <Route
           path="/locationDetail/:locationName"
           element={isLogIn ? <LocationDetail username={username} /> : <Navigate replace to="/login" />}
+        />
+        <Route
+          path="/favLocation/:favLocation"
+          element={isLogIn ? <FavLocation username={username} /> : <Navigate replace to="/login" />}
         />
       </Routes>
     </div>

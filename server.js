@@ -512,9 +512,9 @@ db.once('open', function () {
 
   app.get('/fetchLocationDetails/:location', (req, res) => {
     let details = {};
-    Data.findOne({location: req.params['location']}, (err, loc) => {
+    Data.findOne({ location: req.params['location'] }, (err, loc) => {
       if (err) console.log(err);
-      else if (loc === null) console.log("null");
+      else if (loc === null) console.log('null');
       else {
         details = {
           temp: loc.temp,
@@ -523,16 +523,16 @@ db.once('open', function () {
           gust: loc.gust,
           humid: loc.humid,
         };
-        Location.findOne({location:req.params['location']}, (err, loc) => {
+        Location.findOne({ location: req.params['location'] }, (err, loc) => {
           if (err) console.log(err);
           else {
-            details = {...details, latitude: loc.latitude, longtitude: loc.longtitude };
+            details = { ...details, latitude: loc.latitude, longtitude: loc.longtitude };
             res.send(details);
           }
         });
       }
     });
-  })
+  });
   //app.get('/*', (req, res) => res.send('Success'));
 });
 

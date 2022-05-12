@@ -39,7 +39,7 @@ function LoginPage(props) {
           props.loginCallback(true);
           if (res.isAdmin === true) {
             props.adminCallback(true);
-            props.usernameCallback('admin')
+            props.usernameCallback('admin');
             navigate('/admin');
           } else {
             props.usernameCallback(username);

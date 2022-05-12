@@ -1,6 +1,6 @@
 import React from 'react';
 import CommentBlock from './CommentBlock';
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
 
 function LocationDetail(props) {
   const [comment, setComment] = React.useState('');
@@ -58,11 +58,11 @@ function LocationDetail(props) {
         Accept: 'application/json',
       },
     })
-    .then((res) => res.json())
-    .then((res) => {
-      setLocationDetail((locationDetail) => (locationDetail = res));
-    })
-  }, [locationName])
+      .then((res) => res.json())
+      .then((res) => {
+        setLocationDetail((locationDetail) => (locationDetail = res));
+      });
+  }, [locationName]);
 
   return (
     <div className="h-100 d-flex flex-column">

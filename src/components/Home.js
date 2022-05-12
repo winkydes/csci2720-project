@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 //import {usePapaParse} from 'react-papaparse'
 import Table from './Table';
+import Header from './Header';
 
 function Home(props) {
   const [tableData, setTableData] = React.useState([]);
@@ -12,8 +13,6 @@ function Home(props) {
   const [speed_list, setSpeedList] = React.useState(new Array(49).fill('N/A'));
   const [gust_list, setGustList] = React.useState(new Array(49).fill('N/A'));
   const [humid_list, setHumidList] = React.useState(new Array(49).fill('N/A'));
-
-  const navigate = useNavigate();
 
   // when fetch_data is called, data from database is fetched and displayed
   function fetch_data() {
@@ -45,7 +44,7 @@ function Home(props) {
         } //endOf while
         let j = 0;
         setDataList([]);
-        let list = []
+        let list = [];
         while (j < location_list.length) {
           // setDataList(curr => curr.push(
           //   {
@@ -67,7 +66,7 @@ function Home(props) {
           });
           j++;
         }
-        setDataList(data_list => data_list = list);
+        setDataList((data_list) => (data_list = list));
         setTableData({
           columns: [
             {
@@ -111,12 +110,14 @@ function Home(props) {
         });
       });
   }
-  useEffect(fetch_data, [data_list, direction_list, gust_list, humid_list, location_list, speed_list, temp_list])
+  useEffect(fetch_data, [data_list, direction_list, gust_list, humid_list, location_list, speed_list, temp_list]);
   return (
     <div>
-      <div className="bg-light">This is homepage. Try commit.</div>
-      <button onClick={() => props.callback(false)}>Logout</button>
+      <Header username={props.username} />
       <Table data={tableData} />
+      <button className="btn btn-secondary" onClick={() => props.callback(false)}>
+        Logout
+      </button>
     </div>
   );
 }
