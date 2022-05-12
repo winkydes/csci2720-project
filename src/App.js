@@ -52,7 +52,7 @@ function App() {
           element={isLogIn ? <LocationDetail username={username} /> : <Navigate replace to="/login" />}
         />
         <Route
-          path="/favLocation/:favLocation"
+          path="/favLocation/:username"
           element={isLogIn ? <FavLocation username={username} /> : <Navigate replace to="/login" />}
         />
       </Routes>

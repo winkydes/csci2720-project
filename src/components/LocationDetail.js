@@ -6,6 +6,7 @@ function LocationDetail(props) {
   const [comment, setComment] = React.useState('');
   const [commentData, setCommentData] = React.useState([]);
   const [locationDetail, setLocationDetail] = React.useState({});
+  const [isFavLoc, setIsFavLoc] = React.useState(false);
 
   let { locationName } = useParams();
   locationName = locationName.substring(1);
@@ -34,6 +35,7 @@ function LocationDetail(props) {
       .then((res) => console.log(res.success));
   };
 
+  // fetch comment
   React.useEffect(() => {
     fetch(`http://localhost/fetchComment/${locationName}`, {
       method: 'GET',
@@ -49,6 +51,7 @@ function LocationDetail(props) {
       });
   }, [commentData, comment, locationName]);
 
+  // fetch details of location
   React.useEffect(() => {
     fetch(`http://localhost/fetchLocationDetails/${locationName}`, {
       method: 'GET',
@@ -64,6 +67,53 @@ function LocationDetail(props) {
       });
   }, [locationName]);
 
+  // fetch whether this location is user's favourite location
+  React.useEffect(() => {
+    fetch(`http://localhost/checkFavLocation/${locationName}/${props.username}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.isFavLoc === true) setIsFavLoc((isFavLoc) => (isFavLoc = true));
+        else setIsFavLoc((isFavLoc) => (isFavLoc = false));
+      });
+  }, [locationName, props.username, isFavLoc]);
+
+  function addFavLocation() {
+    fetch(`http://localhost/addFavLocation/${locationName}/${props.username}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setIsFavLoc((isFavLoc) => (isFavLoc = true));
+      });
+  }
+
+  function removeFavLocation() {
+    fetch(`http://localhost/delFavLocation/${locationName}/${props.username}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setIsFavLoc((isFavLoc) => (isFavLoc = false));
+      });
+  }
+
   return (
     <div className="h-100 d-flex flex-column">
       <div
@@ -73,8 +123,17 @@ function LocationDetail(props) {
       >
         This is where the map is located at.
       </div>
-      <div className="d-flex my-2 ms-2">
+      <div className="d-flex my-2 ms-2 justify-content-between">
         <h1>{locationName}</h1>
+        {isFavLoc ? (
+          <button onClick={() => removeFavLocation()} className="btn btn-danger me-2">
+            Remove from favourite
+          </button>
+        ) : (
+          <button onClick={() => addFavLocation()} className="btn btn-success me-2">
+            Add to favourite
+          </button>
+        )}
       </div>
       <div className="d-flex w-100 align-items-center justify-content-center">
         <div className="w-100 row">
@@ -82,10 +141,10 @@ function LocationDetail(props) {
             <h3>Details</h3>
             <table className="m-2">
               <tr>
-                <td>latitude: {locationDetail.latitude}</td>
+                <td>Latitude: {locationDetail.latitude}</td>
               </tr>
               <tr>
-                <td>longtitude: {locationDetail.longtitude}</td>
+                <td>Longtitude: {locationDetail.longtitude}</td>
               </tr>
               <tr>
                 <td>Air Temperature: {locationDetail.temp}</td>

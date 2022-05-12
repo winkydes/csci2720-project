@@ -337,7 +337,7 @@ db.once('open', function () {
     );
   });
 
-  app.post('/listUser', (req, res) => {
+  app.get('/listUser', (req, res) => {
     User.find({}, (err, list) => {
       if (err) console.log(err);
       else res.send(list);
@@ -530,6 +530,59 @@ db.once('open', function () {
             res.send(details);
           }
         });
+      }
+    });
+  });
+
+  app.get('/favLocation/:username', (req, res) => {
+    User.findOne({ username: req.params['username'] })
+      .populate('favouriteLocation')
+      .exec((err, user) => {
+        if (err) console.log(err);
+        else res.send({ list: user.favouriteLocation });
+      });
+  });
+
+  app.get('/addFavLocation/:location/:username', (req, res) => {
+    Location.findOne({ name: req.params['location'] }, (err, loc) => {
+      if (err) console.log(err);
+      else {
+        User.findOneAndUpdate({ username: req.params['username'] }, { $push: { favouriteLocation: loc } }, (err) => {
+          if (err) console.log(err);
+          else res.send({ success: true });
+        });
+      }
+    });
+  });
+
+  app.get('/delFavLocation/:location/:username', (req, res) => {
+    Location.findOne({ name: req.params['location'] }, (err, loc) => {
+      if (err) console.log(err);
+      else {
+        User.findOneAndUpdate(
+          { username: req.params['username'] },
+          { $pull: { favouriteLocation: loc._id } },
+          (err) => {
+            if (err) console.log(err);
+            else res.send({ success: true });
+          }
+        );
+      }
+    });
+  });
+
+  app.get('/checkFavLocation/:location/:username', (req, res) => {
+    Location.findOne({ name: req.params['location'] }, (err, loc) => {
+      if (err) console.log(err);
+      else {
+        User.findOne({ username: req.params['username'] })
+          .populate('favouriteLocation')
+          .exec((err, user) => {
+            if (err) console.log(err);
+            else if (user.favouriteLocation.find((element) => element.name === loc.name) === undefined) {
+              res.send({ isFavLoc: false });
+            } else res.send({ isFavLoc: true });
+          });
       }
     });
   });
