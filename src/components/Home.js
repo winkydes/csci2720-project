@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 //import {usePapaParse} from 'react-papaparse'
 import Table from './Table';
@@ -70,37 +70,37 @@ function Home(props) {
         setTableData({
           columns: [
             {
-              label: 'Location',
+              label: <div className='unselectable'>Location</div>,
               field: 'location',
               sort: 'asc',
               width: 150,
             },
             {
-              label: 'Air temperature',
+              label: <div className='unselectable'>Air temperature</div>,
               field: 'temp',
               sort: 'asc',
               width: 270,
             },
             {
-              label: 'Wind direction',
+              label: <div className='unselectable'>Wind direction</div>,
               field: 'direction',
               sort: 'asc',
               width: 200,
             },
             {
-              label: 'Wind speed',
+              label: <div className='unselectable'>Wind speed</div>,
               field: 'speed',
               sort: 'asc',
               width: 100,
             },
             {
-              label: 'Maximum gust',
+              label: <div className='unselectable'>Maximum gust</div>,
               field: 'gust',
               sort: 'asc',
               width: 150,
             },
             {
-              label: 'Humidity',
+              label: <div className='unselectable'>Humidity</div>,
               field: 'humid',
               sort: 'asc',
               width: 150,
@@ -110,7 +110,7 @@ function Home(props) {
         });
       });
   }
-  useEffect(fetch_data, [data_list, direction_list, gust_list, humid_list, location_list, speed_list, temp_list]);
+  React.useEffect(fetch_data, [data_list, direction_list, gust_list, humid_list, location_list, speed_list, temp_list]);
   return (
     <div>
       <Header username={props.username} />
