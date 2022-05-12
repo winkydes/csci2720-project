@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 //import {usePapaParse} from 'react-papaparse'
 import Table from './Table';
 import Header from './Header';
@@ -25,7 +25,7 @@ function Home(props) {
     })
       .then((res) => res.json())
       .then((res) => {
-        // store all location into a list, later set data according to thi list
+        // store all location into a list, later set data according to this list
         //console.log('HOMEJS,', res[0].gust);
         //console.log(location_list.length);
         for (var k = 0; k < 49; k++) {
@@ -76,7 +76,7 @@ function Home(props) {
               width: 150,
             },
             {
-              label: 'Air tamperature',
+              label: 'Air temperature',
               field: 'temp',
               sort: 'asc',
               width: 270,

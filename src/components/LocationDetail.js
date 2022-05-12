@@ -1,6 +1,7 @@
 import React from 'react';
 import CommentBlock from './CommentBlock';
 import { useParams } from 'react-router-dom';
+import BackToHomeHeader from './BackToHomeHeader';
 
 function LocationDetail(props) {
   const [comment, setComment] = React.useState('');
@@ -116,6 +117,7 @@ function LocationDetail(props) {
 
   return (
     <div className="h-100 d-flex flex-column">
+      <BackToHomeHeader />
       <div
         id="map"
         className="h-50 position-sticky sticky-top d-flex align-items-center justify-content-center border border-dark bg-white"

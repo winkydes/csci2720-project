@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BackToHomeHeader from './BackToHomeHeader';
 
 function FavLocation(props) {
   const [favLocationList, setFavLocationList] = React.useState([]);
@@ -24,6 +25,7 @@ function FavLocation(props) {
 
   return (
     <div>
+      <BackToHomeHeader />
       <h1>Below are your favourite locations!</h1>
       {favLocationList.length === 0 ? (
         <p>You have not add any favourite locations yet.</p>
