@@ -10,7 +10,8 @@ function RegisterPage(props) {
   let navigate = useNavigate();
 
   function sendRequest() {
-    props.callback(true);
+    props.loginCallback(true);
+    props.usernameCallback(username);
     navigate('../home');
   }
   const handleSubmit = async (event) => {

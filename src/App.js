@@ -45,7 +45,7 @@ function App() {
         />
         <Route
           path="/register"
-          element={isLogIn ? <Navigate replace to="/home" /> : <RegisterPage callback={setIsLogIn.bind(this)} />}
+          element={isLogIn ? <Navigate replace to="/home" /> : <RegisterPage loginCallback={setIsLogIn.bind(this)} usernameCallback={setUsername.bind(this)} />}
         />
         <Route
           path="/locationDetail/:locationName"

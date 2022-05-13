@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const papa = require('papaparse');
 const request = require('request');
+const bcrypt = require('bcrypt');
 
 require('dotenv').config();
 
@@ -149,22 +150,28 @@ db.once('open', function () {
 
   // create user when all conditions are checked
   app.post('/createUser', (req, res) => {
-    User.create(
-      {
-        admin: false,
-        username: req.body['username'],
-        password: req.body['password'],
-        favouriteLocation: [],
-      },
-      (err, user) => {
-        if (err) res.status(500).set('content-type', 'text/plain').send('Error in creating user');
-        else
-          res
-            .status(201)
-            .set('content-type', 'text/plain')
-            .send({ message: `User created with username ${user.username}, and password ${user.password}` });
+    bcrypt.hash(req.body['password'], 5, (err, hash) => {
+      if (err) console.log(err);
+      else {
+        User.create(
+          {
+            admin: false,
+            username: req.body['username'],
+            password: hash,
+            favouriteLocation: [],
+          },
+          (err, user) => {
+            if (err) res.status(500).set('content-type', 'text/plain').send('Error in creating user');
+            else
+              res
+                .status(201)
+                .set('content-type', 'text/plain')
+                .send({ message: `User created with username ${user.username}, and password ${user.password}` });
+          }
+        );
       }
-    );
+    })
+    
   });
 
   // verify login input data
@@ -176,12 +183,16 @@ db.once('open', function () {
           passwordVerified: false,
           usernameVerified: false,
         });
-      else
-        res.send({
-          passwordVerified: user.password === req.body['password'],
-          usernameVerified: true,
-          isAdmin: user.admin,
-        });
+      else{
+        bcrypt.compare(req.body['password'], user.password, (err, result) => {
+          res.send({
+            passwordVerified: result,
+            usernameVerified: true,
+            isAdmin: user.admin,
+          });
+        })
+      }
+        
     });
   });
 
@@ -255,7 +266,6 @@ db.once('open', function () {
     Location.find({}, (err, list) => {
       if (err) console.log(err);
       else res.send(list);
-      console.log(list);
     });
   });
 
@@ -264,10 +274,7 @@ db.once('open', function () {
     req.body['lat'] ? (temp['latitude'] = req.body['lat']) : null;
     req.body['long'] ? (temp['longtitude'] = req.body['long']) : null;
     req.body['name'] ? (temp['name'] = req.body['name']) : null;
-
-    console.log(temp);
     Location.find(temp, (err, location) => {
-      console.log(location);
       if (err) console.log(err);
       else res.send(location);
     });
@@ -337,20 +344,26 @@ db.once('open', function () {
 
   // user CRUD
   app.post('/createUserAdmin', (req, res) => {
-    User.create(
-      {
-        admin: false,
-        username: req.body['username'],
-        password: req.body['password'],
-      },
-      (err, user) => {
-        if (err) res.send('Error');
-        else res.send('Done');
-      }
-    );
+    bcrypt.hash(req.body['password'], 5, (err, hash) => {
+      User.create(
+        {
+          admin: false,
+          username: req.body['username'],
+          password: hash,
+        },
+        (err, user) => {
+          if (err) {
+            console.log(err);
+            res.send('Error');
+          }
+          else res.send('Done');
+        }
+      );
+    })
+    
   });
 
-  app.get('/listUser', (req, res) => {
+  app.post('/listUser', (req, res) => {
     User.find({}, (err, list) => {
       if (err) console.log(err);
       else res.send(list);
@@ -358,41 +371,52 @@ db.once('open', function () {
   });
 
   app.post('/findUser', (req, res) => {
-    console.log('hi');
     let temp = {};
     req.body['username'] ? (temp['username'] = req.body['username']) : null;
     req.body['password'] ? (temp['password'] = req.body['password']) : null;
     temp['admin'] = false;
     console.log(temp);
     User.find(temp, (err, user) => {
-      console.log(user);
       if (err) console.log(err);
       else res.send(user);
     });
   });
 
   app.post('/updatePassword', (req, res) => {
-    User.findOneAndUpdate(
-      {
-        username: req.body['username'],
-      },
-      {
-        password: req.body['password'],
-      },
-      (err, user) => {
-        console.log(user);
-        if (err) res.send('Error');
-        else if (user) res.send('Done');
-        else res.send('No such record');
-      }
-    );
+    bcrypt.hash(req.body['password'], 5, (err, hash) => {
+      User.findOneAndUpdate(
+        {
+          username: req.body['username'],
+        },
+        {
+          password: hash,
+        },
+        (err, user) => {
+          if (err) res.send('Error');
+          else if (user) res.send('Done');
+          else res.send('No such record');
+        }
+      );
+    })
+    
   });
 
   app.post('/deleteUser', (req, res) => {
-    User.deleteMany({ username: req.body['username'], password: req.body['password'] }, (err, user) => {
-      if (err) res.send('Error');
-      else if (user.deletedCount) res.send('done');
-      else res.send('No such record');
+    User.findOne({username: req.body['username']}, (err, user) => {
+      if (err) console.log(err);
+      else if (user === null) res.send('No such user');
+      else {
+        bcrypt.compare(req.body['password'], user.password, (err, result) => {
+          if (err) console.log(err);
+          else if (!result) res.send('wrong password');
+          else if (result) {
+            User.deleteOne({username: req.body['username']}, (err) => {
+              if (err) console.log(err);
+              else res.send('done');
+            })
+          }
+        })
+      }
     });
   });
 
@@ -422,7 +446,7 @@ db.once('open', function () {
         time: currentDate.toLocaleTimeString("en-US"),
       },
       (err, update) => {
-        if (err) console.log('error');
+        if (err) console.log(err);
         else console.log('Done');
       }
     );
@@ -436,8 +460,6 @@ db.once('open', function () {
       });
       if (i == 2) {
         dataStream.on('finish', () => {
-          console.log(data[0]);
-          console.log(data.length);
           let i = 0;
 
           location_list = [];
@@ -453,7 +475,6 @@ db.once('open', function () {
             }
             i++;
           }
-          console.log('location list:', location_list);
           // getting data according to the locations
           let toGet = null;
           let k = 0;
@@ -489,8 +510,6 @@ db.once('open', function () {
               k++;
             }
           } //endOf while
-          console.log(gust_list);
-          console.log(location_list.length);
 
           for (var p = 0; p < location_list.length; p++) {
             Data.findOneAndUpdate(
@@ -505,7 +524,7 @@ db.once('open', function () {
                 humid: humid_list[p],
               },
               (err, location) => {
-                if (err) console.log('error');
+                if (err) console.log(err);
                 else console.log('Done');
               }
             );
@@ -541,7 +560,6 @@ db.once('open', function () {
           if (err) console.log(err);
           else {
             let arr = [list, update]
-            console.log(arr)
             res.send(arr);
           }
         })
@@ -562,8 +580,9 @@ db.once('open', function () {
           gust: loc.gust,
           humid: loc.humid,
         };
-        Location.findOne({ location: req.params['location'] }, (err, loc) => {
+        Location.findOne({ name: req.params['location'] }, (err, loc) => {
           if (err) console.log(err);
+          else if (loc === null) res.send("location not found");
           else {
             details = { ...details, latitude: loc.latitude, longtitude: loc.longtitude };
             res.send(details);
@@ -613,6 +632,7 @@ db.once('open', function () {
   app.get('/checkFavLocation/:location/:username', (req, res) => {
     Location.findOne({ name: req.params['location'] }, (err, loc) => {
       if (err) console.log(err);
+      else if (loc === null) res.send("No such location");
       else {
         User.findOne({ username: req.params['username'] })
         .exec((err, user) => {
