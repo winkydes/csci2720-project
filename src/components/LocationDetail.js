@@ -2,6 +2,7 @@ import React from 'react';
 import CommentBlock from './CommentBlock';
 import { useParams } from 'react-router-dom';
 import BackToHomeHeader from './BackToHomeHeader';
+import MarkerMap from './MarkerMap';
 
 function LocationDetail(props) {
   const [comment, setComment] = React.useState('');
@@ -123,7 +124,7 @@ function LocationDetail(props) {
         className="h-50 position-sticky sticky-top d-flex align-items-center justify-content-center border border-dark bg-white"
         style={{ minHeight: '50vh' }}
       >
-        This is where the map is located at.
+        <MarkerMap />
       </div>
       <div className="d-flex my-2 ms-2 justify-content-between">
         <h1>{locationName}</h1>
