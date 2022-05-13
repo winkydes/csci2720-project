@@ -137,46 +137,74 @@ function LocationDetail(props) {
           </button>
         )}
       </div>
-      <div className="d-flex w-100 align-items-center justify-content-center">
-        <div className="w-100 row">
-          <div id="detailSession" className="col-6 bg-secondary bg-gradient" style={{ textAlign: 'left' }}>
+
+      {/* <div className="d-flex w-100 align-items-center justify-content-center container"> */}
+      <div className="container align-items-center justify-content-center w-100">
+
+        <div className="row">
+
+          <div id="detailSession" className="col-12 table-responsive text-nowrap" style={{ textAlign: 'left' }}>
             <h3>Details</h3>
-            <table className="m-2">
+
+            <table className="table table-responsive">
               <tr>
-                <td>Latitude: {locationDetail.latitude}</td>
+                {/* <td>Latitude: {locationDetail.latitude}</td> */}
+                <th scope="row">Latitude:</th>
+                <td>{locationDetail.latitude}</td>
               </tr>
               <tr>
-                <td>Longtitude: {locationDetail.longtitude}</td>
+                {/* <td>Longtitude: {locationDetail.longtitude}</td> */}
+                <th scope="row">Longtitude:</th>
+                <td>{locationDetail.longtitude}</td>
               </tr>
               <tr>
-                <td>Air Temperature: {locationDetail.temp}</td>
+                {/* <td>Air Temperature: {locationDetail.temp}</td> */}
+                <th scope="row">Air Temperature:</th>
+                <td>{locationDetail.temp}</td>
               </tr>
               <tr>
-                <td>Wind Direction: {locationDetail.direction}</td>
+                {/* <td>Wind Direction: {locationDetail.direction}</td> */}
+                <th scope="row">Wind Direction:</th>
+                <td>{locationDetail.direction}</td>
               </tr>
               <tr>
-                <td>Wind Speed: {locationDetail.speed}</td>
+                {/* <td>Wind Speed: {locationDetail.speed}</td> */}
+                <th scope="row">Wind Speed:</th>
+                <td>{locationDetail.speed}</td>
               </tr>
               <tr>
-                <td>Maximum Gust: {locationDetail.gust}</td>
+                {/* <td>Maximum Gust: {locationDetail.gust}</td> */}
+                <th scope="row">Maximum Gust:</th>
+                <td>{locationDetail.gust}</td>
               </tr>
               <tr>
-                <td>Humidity: {locationDetail.humid}</td>
+                {/* <td>Humidity: {locationDetail.humid}</td> */}
+                <th scope="row">Humidity:</th>
+                <td>{locationDetail.humid}</td>
               </tr>
             </table>
+
           </div>
-          <div id="commentSession" className="col-6 bg-secondary bg-gradient" style={{ textAlign: 'left' }}>
+        </div>
+
+        <hr />
+
+        <div className="w-100 row">
+          <div id="commentSession" className="col-12" style={{ textAlign: 'left' }}>
             <h3>Comments</h3>
             {commentData !== null ? (
               commentData.map((item) => <CommentBlock key={item.id} comment={item} />)
             ) : (
               <p>There are no comments yet.</p>
             )}
-            <form className="my-2 d-flex flex-row align-items-center" onSubmit={handleSubmit}>
-              <textarea id="comment" className="me-2 w-75 h-25" type="text" placeholder="Comment..." />
-              <input type="submit" className="btn btn-light" value="Post!" />
+            <form className="" onSubmit={handleSubmit}>
+              <div className="form-group">
+                <textarea id="comment" className="form-control" type="text" placeholder="Comment..." style={{marginBottom: 10}}/>
+              </div>
+              <input type="submit" className="btn btn-info form-control" value="Post!" />
             </form>
           </div>
+
         </div>
       </div>
     </div>

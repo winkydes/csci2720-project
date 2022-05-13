@@ -31,9 +31,12 @@ function FavLocation(props) {
         <p>You have not add any favourite locations yet.</p>
       ) : (
         favLocationList.map((item) => (
-          <div className="d-block h3">
-            <Link to={{ pathname: `/locationDetail/:${item}` }}>{item}</Link>
-          </div>
+
+          <ul className="list-group list-group-flush mx-auto w-50">
+            <li className="list-group-item">
+              <h5><Link to={{ pathname: `/locationDetail/:${item}` }}>{item}</Link></h5>
+            </li>
+          </ul>
         ))
       )}
     </div>
