@@ -119,13 +119,7 @@ function LocationDetail(props) {
   return (
     <div className="h-100 d-flex flex-column">
       <BackToHomeHeader />
-      <div
-        id="map"
-        className="h-50 position-sticky sticky-top d-flex align-items-center justify-content-center border border-dark bg-white"
-        style={{ minHeight: '50vh' }}
-      >
-        <MarkerMap />
-      </div>
+      <MarkerMap filter={locationName} />
       <div className="d-flex my-2 ms-2 justify-content-between">
         <h1>{locationName}</h1>
         {isFavLoc ? (

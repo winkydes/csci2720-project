@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Table from './Table';
 import Header from './Header';
 import MarkerMap from './MarkerMap';
+import { mapboxToken } from '../environment';
 
 function Home(props) {
   const [tableData, setTableData] = React.useState([]);
@@ -125,6 +126,7 @@ function Home(props) {
     if (data_list.length < 500) {
       fetch_data();
     }
+    console.log(Array.from(new Set(location_list)).sort());
   }, [data_list]);
 
   return (

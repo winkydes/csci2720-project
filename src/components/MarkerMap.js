@@ -3,6 +3,58 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 import { mapboxToken } from '../environment';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+const mapper = [
+  'Central Pier',
+  'Chek Lap Kok',
+  'Cheung Chau',
+  'Cheung Chau Beach',
+  'Clear Water Bay',
+  'Green Island',
+  'HK Observatory',
+  'HK Park',
+  'Happy Valley',
+  'Kai Tak',
+  'Kai Tak Runway Park',
+  'Kau Sai Chau',
+  "King's Park",
+  'Kowloon City',
+  'Kwun Tong',
+  'Lamma Island',
+  'Lau Fau Shan',
+  'Ngong Ping',
+  'North Point',
+  'Pak Tam Chung',
+  'Peng Chau',
+  'Sai Kung',
+  'Sha Chau',
+  'Sha Tin',
+  'Sham Shui Po',
+  'Shau Kei Wan',
+  'Shek Kong',
+  'Sheung Shui',
+  'Stanley',
+  'Star Ferry',
+  'Ta Kwu Ling',
+  'Tai Lung',
+  'Tai Mei Tuk',
+  'Tai Mo Shan',
+  'Tai Po',
+  'Tai Po Kau',
+  'Tap Mun',
+  "Tate's Cairn",
+  'The Peak',
+  'Tseung Kwan O',
+  'Tsing Yi',
+  'Tsuen Wan Ho Koon',
+  'Tsuen Wan Shing Mun Valley',
+  'Tuen Mun',
+  'Waglan Island',
+  'Wetland Park',
+  'Wong Chuk Hang',
+  'Wong Tai Sin',
+  'Yuen Long Park',
+];
+
 function MarkerMap(props) {
   mapboxgl.accessToken = mapboxToken;
 
@@ -31,8 +83,10 @@ function MarkerMap(props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        data.forEach((loc) => {
-          new mapboxgl.Marker().setLngLat([...loc.geometry.coordinates]).addTo(map.current);
+        data.forEach((loc, index) => {
+          if (!(props.filter && props.filter !== mapper[index])) {
+            new mapboxgl.Marker().setLngLat([...loc.geometry.coordinates]).addTo(map.current);
+          }
         });
       });
   });
