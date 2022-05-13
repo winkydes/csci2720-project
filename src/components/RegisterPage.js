@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import BackToHomeHeader from './BackToHomeHeader';
 
 function RegisterPage(props) {
   const [username, setUsername] = React.useState('');
@@ -59,47 +60,51 @@ function RegisterPage(props) {
   };
 
   return (
-    <div className="h-100 d-flex justify-content-center align-items-center flex-column">
-      <section class="register">
-        <h2>Register</h2>
-        <form className="d-flex flex-column" onSubmit={handleSubmit}>
-          {/* <div className="w-100 mt-2 d-flex justify-content-between"> */}
-          <div className="mb-3">
-            {/* <label className="me-2">Username:</label> */}
-            <input
-              className={`border rounded ${
-                isUsernameValid ? 'form-control border-dark' : 'form-control border-danger'
-              }`}
-              placeholder="User Name: 4-20 character"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              type="text"
-            />
-          </div>
+    <div className="h-100">
+      <BackToHomeHeader />
+      <div className="h-100 d-flex justify-content-center align-items-center flex-column">
+        <section class="register">
+          <h2>Register</h2>
+          <form className="d-flex flex-column" onSubmit={handleSubmit}>
+            {/* <div className="w-100 mt-2 d-flex justify-content-between"> */}
+            <div className="mb-3">
+              {/* <label className="me-2">Username:</label> */}
+              <input
+                className={`border rounded ${
+                  isUsernameValid ? 'form-control border-dark' : 'form-control border-danger'
+                }`}
+                placeholder="User Name: 4-20 character"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                type="text"
+              />
+            </div>
 
-          {/* <div className="w-100 mt-2 d-flex justify-content-between"> */}
-          <div className="mb-3">
-            {/* <label className="me-2">Password:</label> */}
-            <input
-              className={`border rounded ${
-                isPasswordValid ? 'form-control border-dark' : 'form-control border-danger'
-              }`}
-              placeholder="Password: 4-20 character"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="text"
-            />
-          </div>
+            {/* <div className="w-100 mt-2 d-flex justify-content-between"> */}
+            <div className="mb-3">
+              {/* <label className="me-2">Password:</label> */}
+              <input
+                className={`border rounded ${
+                  isPasswordValid ? 'form-control border-dark' : 'form-control border-danger'
+                }`}
+                placeholder="Password: 4-20 character"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="text"
+              />
+            </div>
 
-          <div class="mb-3">
-            <button class="btn btn-primary d-block w-100" type="submit">
-              Register
-            </button>
-            {/* <input className="mt-2" type="submit" /> */}
-          </div>
-        </form>
-      </section>
+            <div class="mb-3">
+              <button class="btn btn-primary d-block w-100" type="submit">
+                Register
+              </button>
+              {/* <input className="mt-2" type="submit" /> */}
+            </div>
+          </form>
+        </section>
+      </div>
     </div>
+    
   );
 }
 
