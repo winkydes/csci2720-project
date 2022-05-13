@@ -68,11 +68,11 @@ function Home(props) {
           // ))
           list.push({
             location: <Link to={{ pathname: `/locationDetail/:${location_list[j]}` }}>{location_list[j]}</Link>,
-            temp: temp_list[j],
-            direction: direction_list[j],
-            speed: speed_list[j],
-            gust: gust_list[j],
-            humid: humid_list[j],
+            temp: temp_list[j] === "N/A" || isNaN(parseFloat(temp_list[j])) ? null : parseFloat(temp_list[j]),
+            direction: direction_list[j] === "N/A" ? null : direction_list[j],
+            speed: speed_list[j] === "N/A" || isNaN(parseInt(speed_list[j])) ? null : parseInt(speed_list[j]),
+            gust: gust_list[j] === "N/A" || isNaN(parseInt(gust_list[j])) ? null : parseInt(gust_list[j]),
+            humid: humid_list[j] === "N/A" || isNaN(parseInt(humid_list[j])) ? null : parseInt(humid_list[j]),
           });
           j++;
         }
@@ -119,6 +119,7 @@ function Home(props) {
           rows: data_list.slice(data_list.length - 49, data_list.length),
         });
       });
+
   }
 
   useEffect(() => {
