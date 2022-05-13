@@ -4,15 +4,16 @@ import { mapboxToken } from '../environment';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const mapper = [
-  'Central Pier',
-  'Chek Lap Kok',
+  'North Point', // incorrect location
+  'Central Pier', 
   'Cheung Chau',
   'Cheung Chau Beach',
   'Clear Water Bay',
   'Green Island',
+  'Happy Valley',
+  'Chek Lap Kok',
   'HK Observatory',
   'HK Park',
-  'Happy Valley',
   'Kai Tak',
   'Kai Tak Runway Park',
   'Kau Sai Chau',
@@ -22,7 +23,6 @@ const mapper = [
   'Lamma Island',
   'Lau Fau Shan',
   'Ngong Ping',
-  'North Point',
   'Pak Tam Chung',
   'Peng Chau',
   'Sai Kung',

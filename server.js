@@ -206,7 +206,7 @@ db.once('open', function () {
       (err, newComment) => {
         if (err) console.log(err);
         else {
-          console.log(req.body['location']);
+          // console.log(req.body['location']);
           Location.findOneAndUpdate(
             { name: req.body['location'] },
             { $push: { comments: newComment } },
@@ -443,8 +443,8 @@ db.once('open', function () {
   // ref from : https://github.com/mholt/PapaParse/issues/440, update data on database
   app.get('/home', (req, res) => {
     let currentDate = new Date();
-    console.log(currentDate.toDateString());
-    console.log(currentDate.toLocaleTimeString('en-US'));
+    // console.log(currentDate.toDateString());
+    // console.log(currentDate.toLocaleTimeString('en-US'));
     // update last updated time on database
     LastUpdate.findOneAndUpdate(
       {
