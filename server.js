@@ -414,19 +414,11 @@ db.once('open', function () {
     User.findOne({username: req.body['username']}, (err, user) => {
       if (err) console.log(err);
       else if (user === null) res.send('No such user');
-      else {
-        bcrypt.compare(req.body['password'], user.password, (err, result) => {
-          if (err) console.log(err);
-          else if (!result) res.send('wrong password');
-          else if (result) {
-            User.deleteOne({username: req.body['username']}, (err) => {
-              if (err) console.log(err);
-              else res.send('done');
-            })
-          }
-        })
-      }
-    });
+      else User.deleteOne({username: req.body['username']}, (err) => {
+        if (err) console.log(err);
+        else res.send('Done');
+      });
+    })
   });
 
   app.post('/createAdmin', (req, res) => {

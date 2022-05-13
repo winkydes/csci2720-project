@@ -300,13 +300,12 @@ function Admin(props) {
 
   const deleteUser = (event) => {
     event.preventDefault();
-    if (username === '' || password === '') alert('Please fill in all fields');
+    if (username === '') alert('Please fill in all fields');
     else {
       fetch('http://localhost/deleteUser', {
         method: 'POST',
         body: JSON.stringify({
           username: username,
-          password: password,
         }),
         mode: 'cors',
         headers: {
