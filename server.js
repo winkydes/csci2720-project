@@ -4,6 +4,7 @@ const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const fetch = require('node-fetch');
 const papa = require('papaparse');
 const request = require('request');
 const bcrypt = require('bcrypt');
@@ -13,6 +14,8 @@ require('dotenv').config();
 const app = express();
 const uri = process.env.MONGODB_URI;
 
+const geodata_url =
+  'https://geodata.gov.hk/gs/api/v1.0.0/geoDataQuery?q=%7Bv%3A%221%2E0%2E0%22%2Cid%3A8806a56e-6f68-4f3e-8320-095a23516320%2Clang%3A%22ENG%22%7D';
 const humidity_csv_url = 'https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv';
 const wind_csv_url = 'https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv';
 const air_csv_url = 'https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv';
@@ -86,7 +89,7 @@ db.once('open', function () {
     },
   });
 
-  const LastUpdate = mongoose.model('LastUpdate',LastUpdateSchema);
+  const LastUpdate = mongoose.model('LastUpdate', LastUpdateSchema);
 
   const DataSchema = mongoose.Schema({
     temp: {
@@ -262,6 +265,12 @@ db.once('open', function () {
   //     })
   // })
 
+  app.get('/geodata', (req, res) => {
+    fetch(geodata_url)
+      .then((data) => data.json())
+      .then((data) => res.send(data.features));
+  });
+
   app.post('/listLocation', (req, res) => {
     Location.find({}, (err, list) => {
       if (err) console.log(err);
@@ -434,8 +443,8 @@ db.once('open', function () {
   // ref from : https://github.com/mholt/PapaParse/issues/440, update data on database
   app.get('/home', (req, res) => {
     let currentDate = new Date();
-    console.log(currentDate.toDateString())
-    console.log( currentDate.toLocaleTimeString("en-US"))
+    console.log(currentDate.toDateString());
+    console.log(currentDate.toLocaleTimeString('en-US'));
     // update last updated time on database
     LastUpdate.findOneAndUpdate(
       {
@@ -443,7 +452,7 @@ db.once('open', function () {
       },
       {
         date: currentDate.toDateString(),
-        time: currentDate.toLocaleTimeString("en-US"),
+        time: currentDate.toLocaleTimeString('en-US'),
       },
       (err, update) => {
         if (err) console.log(err);
@@ -556,13 +565,14 @@ db.once('open', function () {
     Data.find({}, (err, list) => {
       if (err) console.log(err);
       else {
-        LastUpdate.find({}, (err,update) => {
+        LastUpdate.find({}, (err, update) => {
           if (err) console.log(err);
           else {
-            let arr = [list, update]
+            let arr = [list, update];
+            console.log(arr);
             res.send(arr);
           }
-        })
+        });
       }
     });
   });
@@ -634,12 +644,11 @@ db.once('open', function () {
       if (err) console.log(err);
       else if (loc === null) res.send("No such location");
       else {
-        User.findOne({ username: req.params['username'] })
-        .exec((err, user) => {
-            if (err) console.log(err);
-            else if (user.favouriteLocation.includes(loc._id)) res.send({ isFavLoc: true });
-            else res.send({ isFavLoc: false });
-          });
+        User.findOne({ username: req.params['username'] }).exec((err, user) => {
+          if (err) console.log(err);
+          else if (user.favouriteLocation.includes(loc._id)) res.send({ isFavLoc: true });
+          else res.send({ isFavLoc: false });
+        });
       }
     });
   });
