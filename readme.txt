@@ -21,3 +21,5 @@ Admin functions:
 				Enter username only to retrieve the record of the specified user
 	Update: 	Enter usename and password to update the password of that user
 	Delete: 	Enter username only to delete the record of that user
+
+We have read this article carefully http://www.cuhk.edu.hk/policy/academichonesty.
