@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import BackToHomeHeader from './BackToHomeHeader';
 import MarkerMap from './MarkerMap';
 
+const baseURL = 'http://localhost';
+
 function LocationDetail(props) {
   const [comment, setComment] = React.useState('');
   const [commentData, setCommentData] = React.useState([]);
@@ -20,7 +22,7 @@ function LocationDetail(props) {
     if (submission === '') return;
     document.getElementById('comment').value = '';
     await setComment((comment) => (comment = submission));
-    await fetch('http://localhost/postComment', {
+    await fetch(baseURL + '/postComment', {
       method: 'POST',
       body: JSON.stringify({
         location: locationName,
@@ -39,7 +41,7 @@ function LocationDetail(props) {
 
   // fetch comment
   React.useEffect(() => {
-    fetch(`http://localhost/fetchComment/${locationName}`, {
+    fetch(baseURL + `/fetchComment/${locationName}`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -55,7 +57,7 @@ function LocationDetail(props) {
 
   // fetch details of location
   React.useEffect(() => {
-    fetch(`http://localhost/fetchLocationDetails/${locationName}`, {
+    fetch(baseURL + `/fetchLocationDetails/${locationName}`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -71,7 +73,7 @@ function LocationDetail(props) {
 
   // fetch whether this location is user's favourite location
   React.useEffect(() => {
-    fetch(`http://localhost/checkFavLocation/${locationName}/${props.username}`, {
+    fetch(baseURL + `/checkFavLocation/${locationName}/${props.username}`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -87,7 +89,7 @@ function LocationDetail(props) {
   }, [locationName, props.username, isFavLoc]);
 
   function addFavLocation() {
-    fetch(`http://localhost/addFavLocation/${locationName}/${props.username}`, {
+    fetch(baseURL + `/addFavLocation/${locationName}/${props.username}`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -102,7 +104,7 @@ function LocationDetail(props) {
   }
 
   function removeFavLocation() {
-    fetch(`http://localhost/delFavLocation/${locationName}/${props.username}`, {
+    fetch(baseURL + `/delFavLocation/${locationName}/${props.username}`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -149,12 +151,12 @@ function LocationDetail(props) {
               </tr>
               <tr>
                 {/* <td>Longtitude: {locationDetail.longtitude}</td> */}
-                <th scope="row">Longtitude:</th>
+                <th scope="row">Longitude:</th>
                 <td>{locationDetail.longtitude}</td>
               </tr>
               <tr>
                 {/* <td>Air Temperature: {locationDetail.temp}</td> */}
-                <th scope="row">Air Temperature:</th>
+                <th scope="row">Air Temperature {'(°C)'}:</th>
                 <td>{locationDetail.temp}</td>
               </tr>
               <tr>
@@ -164,17 +166,17 @@ function LocationDetail(props) {
               </tr>
               <tr>
                 {/* <td>Wind Speed: {locationDetail.speed}</td> */}
-                <th scope="row">Wind Speed:</th>
+                <th scope="row">Wind Speed {'(km/h)'}:</th>
                 <td>{locationDetail.speed}</td>
               </tr>
               <tr>
                 {/* <td>Maximum Gust: {locationDetail.gust}</td> */}
-                <th scope="row">Maximum Gust:</th>
+                <th scope="row">Maximum Gust {'(km/h)'}:</th>
                 <td>{locationDetail.gust}</td>
               </tr>
               <tr>
                 {/* <td>Humidity: {locationDetail.humid}</td> */}
-                <th scope="row">Humidity:</th>
+                <th scope="row">Humidity {'(%)'}:</th>
                 <td>{locationDetail.humid}</td>
               </tr>
             </table>
@@ -185,21 +187,22 @@ function LocationDetail(props) {
         <hr />
 
         <div className="w-100 row">
+        <h3 style = {{textAlign: 'left'}}>Comments</h3>
           <div id="commentSession" className="col-12" style={{ textAlign: 'left' }}>
-            <h3>Comments</h3>
+            
             {commentData !== null ? (
               commentData.map((item) => <CommentBlock key={item.id} comment={item} />)
             ) : (
               <p>There are no comments yet.</p>
             )}
-            <form className="" onSubmit={handleSubmit}>
+
+          </div>
+          <form className="pb-3" onSubmit={handleSubmit}>
               <div className="form-group">
                 <textarea id="comment" className="form-control" type="text" placeholder="Comment..." style={{marginBottom: 10}}/>
               </div>
               <input type="submit" className="btn btn-info form-control" value="Post!" />
             </form>
-          </div>
-
         </div>
       </div>
     </div>

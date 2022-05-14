@@ -6,6 +6,8 @@ import Header from './Header';
 import MarkerMap from './MarkerMap';
 import { mapboxToken } from '../environment';
 
+const baseURL = 'http://localhost';
+
 function Home(props) {
   const [tableData, setTableData] = React.useState([]);
   const [data_list, setDataList] = React.useState([]);
@@ -19,8 +21,8 @@ function Home(props) {
 
   // when fetch_data is called, data from database is fetched and displayed
   function fetch_data() {
-    console.log('caling fetchdata');
-    fetch('http://localhost/userhome', {
+    // console.log('caling fetchdata');
+    fetch(baseURL + '/userhome', {
       method: 'GET',
       // mode: 'cors',
       headers: {
@@ -68,11 +70,11 @@ function Home(props) {
           // ))
           list.push({
             location: <Link to={{ pathname: `/locationDetail/:${location_list[j]}` }}>{location_list[j]}</Link>,
-            temp: temp_list[j] === "N/A" || isNaN(parseFloat(temp_list[j])) ? null : parseFloat(temp_list[j]),
-            direction: direction_list[j] === "N/A" ? null : direction_list[j],
-            speed: speed_list[j] === "N/A" || isNaN(parseInt(speed_list[j])) ? null : parseInt(speed_list[j]),
-            gust: gust_list[j] === "N/A" || isNaN(parseInt(gust_list[j])) ? null : parseInt(gust_list[j]),
-            humid: humid_list[j] === "N/A" || isNaN(parseInt(humid_list[j])) ? null : parseInt(humid_list[j]),
+            temp: temp_list[j] === "N/A" || isNaN(parseFloat(temp_list[j])) || temp_list[j] === "0" ? "" : parseFloat(temp_list[j]),
+            direction: direction_list[j] === "N/A" || direction_list[j] === "0" ? "" : direction_list[j],
+            speed: speed_list[j] === "N/A" || isNaN(parseInt(speed_list[j])) || speed_list[j] === "0" ? "" : parseInt(speed_list[j]),
+            gust: gust_list[j] === "N/A" || isNaN(parseInt(gust_list[j])) || gust_list[j] === "0" ? "" : parseInt(gust_list[j]),
+            humid: humid_list[j] === "N/A" || isNaN(parseInt(humid_list[j])) || humid_list[j] === "0" ? "" : parseInt(humid_list[j]),
           });
           j++;
         }
@@ -86,7 +88,7 @@ function Home(props) {
               width: 150,
             },
             {
-              label: <div className="unselectable">Air temperature</div>,
+              label: <div className="unselectable">Air temperature {'(°C)'}</div>,
               field: 'temp',
               sort: 'asc',
               width: 270,
@@ -98,19 +100,19 @@ function Home(props) {
               width: 200,
             },
             {
-              label: <div className="unselectable">Wind speed</div>,
+              label: <div className="unselectable">Wind speed {'(km/h)'}</div>,
               field: 'speed',
               sort: 'asc',
               width: 100,
             },
             {
-              label: <div className="unselectable">Maximum gust</div>,
+              label: <div className="unselectable">Maximum gust {'(km/h)'}</div>,
               field: 'gust',
               sort: 'asc',
               width: 150,
             },
             {
-              label: <div className="unselectable">Humidity</div>,
+              label: <div className="unselectable">Humidity {'(%)'}</div>,  
               field: 'humid',
               sort: 'asc',
               width: 150,
@@ -124,19 +126,19 @@ function Home(props) {
 
   useEffect(() => {
     // keeps render until this condition, similar to the effect of setting time interval
-    if (data_list.length < 500) {
+    if (data_list.length < 200) {
       fetch_data();
     }
-    console.log(Array.from(new Set(location_list)).sort());
+    // console.log(Array.from(new Set(location_list)).sort());
   }, [data_list]);
 
   return (
-    <div>
+    <div className='pb-3'>
       <Header username={props.username} />
       <MarkerMap />
       <div className="mx-3">
         <Table data={tableData} />
-        <div>Last Update: {lastupdate}</div>
+        <div className='pb-2'>Last Update: {lastupdate}</div>
       </div>
       <button className="btn btn-secondary" onClick={() => props.callback(false)}>
         Logout

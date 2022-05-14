@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackToHomeHeader from './BackToHomeHeader';
 
+const baseURL = 'http://localhost';
+
 function RegisterPage(props) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -15,19 +17,41 @@ function RegisterPage(props) {
     props.usernameCallback(username);
     navigate('../home');
   }
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => { 
     // Prevent page reload
     event.preventDefault();
 
     // Check username and password
-    await setUsernameValid(username !== '' && username.length >= 4 && username.length <= 20);
-    await setPasswordValid(password !== '' && password.length >= 4 && password.length <= 20);
+    // setUsernameValid(username !== '' && username.length >= 4 && username.length <= 20);
+    // setPasswordValid(password !== '' && password.length >= 4 && password.length <= 20);
+    
+    let v = true;
+    if (username !== '' && username.length >= 4 && username.length <= 20) {
+      setUsernameValid(true)
+      console.log('hi')
+    } else {
+      setUsernameValid(false)
+      v = false
+      // return
+    }
+
+    if (password !== '' && password.length >= 4 && password.length <= 20) {
+      setPasswordValid(true)
+      console.log('hii')
+    } else {  
+      setPasswordValid(false)
+      v = false
+      // return
+    }
+
+    if (v === false) return
 
     //check password format
 
     //check if username have been used
-    if (isUsernameValid && isPasswordValid) {
-      fetch('http://localhost/checkUsername', {
+    // if (isUsernameValid && isPasswordValid) {
+    if (v) {
+      fetch(baseURL + '/checkUsername', {
         method: 'POST',
         body: JSON.stringify({ username: username }),
         mode: 'cors',
@@ -38,9 +62,9 @@ function RegisterPage(props) {
       })
         .then((res) => res.json())
         .then((res) => {
-          setUsernameValid((username) => (username = res.verified));
-          if (res.verified && isPasswordValid) {
-            fetch('http://localhost/createUser', {
+          setUsernameValid((isusernameValid) => (isusernameValid = res.verified));
+          if (isUsernameValid && isPasswordValid) {
+            fetch(baseURL + '/createUser', {
               method: 'POST',
               body: JSON.stringify({
                 username: username,

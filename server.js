@@ -8,6 +8,7 @@ const fetch = require('node-fetch');
 const papa = require('papaparse');
 const request = require('request');
 const bcrypt = require('bcrypt');
+const path = require('path')
 
 require('dotenv').config();
 
@@ -23,10 +24,14 @@ const url_list = [humidity_csv_url, air_csv_url, wind_csv_url];
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'build')))
 
 // Use CORS
 app.use(cors({ origin: '*' }));
-
+app.get('/', (req, res) => {
+    console.log('login')
+    res.sendFile(__dirname + '/index.html');
+})
 // Connection
 mongoose.connect(uri, {
   useNewUrlParser: true,
@@ -384,7 +389,7 @@ db.once('open', function () {
     req.body['username'] ? (temp['username'] = req.body['username']) : null;
     req.body['password'] ? (temp['password'] = req.body['password']) : null;
     temp['admin'] = false;
-    console.log(temp);
+    // console.log(temp);
     User.find(temp, (err, user) => {
       if (err) console.log(err);
       else res.send(user);
@@ -444,7 +449,7 @@ db.once('open', function () {
       },
       {
         date: currentDate.toDateString(),
-        time: currentDate.toLocaleTimeString('en-US'),
+        time: currentDate.toLocaleTimeString('en-US', {timeZone: 'Asia/Hong_Kong'}),
       },
       (err, update) => {
         if (err) console.log(err);
@@ -561,7 +566,7 @@ db.once('open', function () {
           if (err) console.log(err);
           else {
             let arr = [list, update];
-            console.log(arr);
+            // console.log(arr);
             res.send(arr);
           }
         });
@@ -647,4 +652,5 @@ db.once('open', function () {
   //app.get('/*', (req, res) => res.send('Success'));
 });
 
-const server = app.listen(80);
+
+const server = app.listen(80, "0.0.0.0");

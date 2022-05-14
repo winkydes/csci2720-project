@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/admin.css';
 import Table from './Table';
+
+const baseURL = 'http://localhost';
+
 function Admin(props) {
   const [long, setLong] = React.useState('');
   const [lat, setLat] = React.useState('');
@@ -34,7 +37,7 @@ function Admin(props) {
     event.preventDefault();
     if (name === '' || long === '' || lat === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/createLocation', {
+      fetch(baseURL + '/createLocation', {
         method: 'POST',
         body: JSON.stringify({
           name: name,
@@ -57,7 +60,7 @@ function Admin(props) {
   const retreiveLocation = (event) => {
     event.preventDefault();
     if (name === '' && long === '' && lat === '') {
-      fetch('http://localhost/listLocation', {
+      fetch(baseURL + '/listLocation', {
         method: 'POST',
         modes: 'cors',
         headers: {
@@ -72,7 +75,7 @@ function Admin(props) {
           changeLocationState(res);
         });
     } else {
-      fetch('http://localhost/findLocation', {
+      fetch(baseURL + '/findLocation', {
         method: 'POST',
         body: JSON.stringify({
           name: name,
@@ -96,7 +99,7 @@ function Admin(props) {
     event.preventDefault();
     if (name === '' || long === '' || lat === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/updateLat', {
+      fetch(baseURL + '/updateLat', {
         method: 'POST',
         body: JSON.stringify({
           name: name,
@@ -120,7 +123,7 @@ function Admin(props) {
     event.preventDefault();
     if (name === '' || long === '' || lat === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/updateLong', {
+      fetch(baseURL + '/updateLong', {
         method: 'POST',
         body: JSON.stringify({
           name: name,
@@ -143,7 +146,7 @@ function Admin(props) {
     event.preventDefault();
     if (name === '' || long === '' || lat === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/updateName', {
+      fetch(baseURL + '/updateName', {
         method: 'POST',
         body: JSON.stringify({
           name: name,
@@ -167,7 +170,7 @@ function Admin(props) {
     event.preventDefault();
     if (name === '' || long === '' || lat === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/deleteLocation', {
+      fetch(baseURL + '/deleteLocation', {
         method: 'POST',
         body: JSON.stringify({
           name: name,
@@ -192,7 +195,7 @@ function Admin(props) {
     event.preventDefault();
     if (username === '' || password === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/createUserAdmin', {
+      fetch(baseURL + '/createUserAdmin', {
         method: 'POST',
         body: JSON.stringify({
           username: username,
@@ -214,7 +217,7 @@ function Admin(props) {
   const retreiveUser = (event) => {
     event.preventDefault();
     if (username === '' && password === '') {
-      fetch('http://localhost/listUser', {
+      fetch(baseURL + '/listUser', {
         method: 'POST',
         modes: 'cors',
         headers: {
@@ -230,7 +233,7 @@ function Admin(props) {
         });
     } else {
       console.error('hi');
-      fetch('http://localhost/findUser', {
+      fetch(baseURL + '/findUser', {
         method: 'POST',
         body: JSON.stringify({
           username: username,
@@ -255,7 +258,7 @@ function Admin(props) {
     event.preventDefault();
     if (username === '' || password === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/updateUsername', {
+      fetch(baseURL + '/updateUsername', {
         method: 'POST',
         body: JSON.stringify({
           username: username,
@@ -278,7 +281,7 @@ function Admin(props) {
     event.preventDefault();
     if (username === '' || password === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/updatePassword', {
+      fetch(baseURL + '/updatePassword', {
         method: 'POST',
         body: JSON.stringify({
           username: username,
@@ -291,7 +294,7 @@ function Admin(props) {
         },
       })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           return res.text();
         })
         .then((res) => alert(res));
@@ -302,7 +305,7 @@ function Admin(props) {
     event.preventDefault();
     if (username === '') alert('Please fill in all fields');
     else {
-      fetch('http://localhost/deleteUser', {
+      fetch(baseURL + '/deleteUser', {
         method: 'POST',
         body: JSON.stringify({
           username: username,
@@ -322,7 +325,7 @@ function Admin(props) {
 
   // when fetch_data is called, the data of the table is updated from the fetched csv directly
   function fetch_data() {
-    fetch('http://localhost/home', {
+    fetch(baseURL + '/home', {
       method: 'GET',
       // mode: 'cors',
       headers: {
@@ -340,11 +343,11 @@ function Admin(props) {
           setLocationList(location_list);
           i++;
         }
-        console.log('location list:', location_list);
+        // console.log('location list:', location_list);
         // getting data according to the locations
         let toGet = null;
         let k = 0;
-        console.log(res.length);
+        // console.log(res.length);
         while (k < 92) {
           // change the target data if encounter a Date Time line
           if (res[k][0] == 'Date time') {
@@ -383,8 +386,8 @@ function Admin(props) {
           setSpeedList(speed_list);
           setDirectionList(direction_list);
         } //endOf while
-        console.log(gust_list);
-        console.log(location_list.length);
+        // console.log(gust_list);
+        // console.log(location_list.length);
         let j = 0;
         setDataList([]);
         while (j < location_list.length) {
@@ -409,43 +412,43 @@ function Admin(props) {
           setDataList(data_list);
           j++;
         }
-        console.log(data_list);
+        // console.log(data_list);
         setTableData({
           columns: [
             {
               label: 'Location',
               field: 'location',
-              sort: 'asc',
+              // sort: 'asc',
               width: 150,
             },
             {
-              label: 'Air tamperature',
+              label: 'Air temperature (°C)',
               field: 'temp',
-              sort: 'asc',
+              sort: 'desc',
               width: 270,
             },
             {
               label: 'Wind direction',
               field: 'direction',
-              sort: 'asc',
+              // sort: 'asc',
               width: 200,
             },
             {
-              label: 'Wind speed',
+              label: 'Wind speed (km/h)',
               field: 'speed',
-              sort: 'asc',
+              // sort: 'asc',
               width: 100,
             },
             {
-              label: 'Maximum gust',
+              label: 'Maximum gust (km/h)',
               field: 'gust',
-              sort: 'asc',
+              // sort: 'asc',
               width: 150,
             },
             {
-              label: 'Humidity',
+              label: 'Humidity (%)',
               field: 'humid',
-              sort: 'asc',
+              // sort: 'asc',
               width: 150,
             },
           ],
@@ -608,8 +611,8 @@ function Admin(props) {
         </form>
       </section>
       <div>
-        <button onClick={() => fetch_data()}>Fetch data</button>
-        <button onClick={() => logout()}>Logout</button>
+        <button className="btn btn-primary me-2" onClick={() => fetch_data()}>Fetch data</button>
+        <button className="btn btn-primary" onClick={() => logout()}>Logout</button>
         <Table data={tableData} />
       </div>
     </div>

@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/login.css';
 
+const baseURL = 'http://localhost';
+
 function LoginPage(props) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -19,7 +21,7 @@ function LoginPage(props) {
     await setPasswordValid(password !== '');
 
     // fire checking if user exists and password correct
-    fetch('http://localhost/verifyLogin', {
+    fetch(baseURL + '/verifyLogin', {
       method: 'POST',
       body: JSON.stringify({
         username: username,
@@ -35,6 +37,8 @@ function LoginPage(props) {
       .then((res) => {
         setUsernameValid(res.usernameVerified);
         setPasswordValid(res.passwordVerified);
+        if (!res.usernameVerified) alert("There is no such user, please try again.");
+        else if (!res.passwordVerified) alert("Wrong password, please try again.");
         if (res.passwordVerified && res.usernameVerified) {
           props.loginCallback(true);
           if (res.isAdmin === true) {
@@ -45,7 +49,7 @@ function LoginPage(props) {
             props.usernameCallback(username);
             navigate('/home');
           }
-        } else console.log('you have inputted the wrong info');
+        }
       });
   };
 

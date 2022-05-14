@@ -2,11 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import BackToHomeHeader from './BackToHomeHeader';
 
+const baseURL = 'http://localhost';
+
 function FavLocation(props) {
   const [favLocationList, setFavLocationList] = React.useState([]);
 
   React.useEffect(() => {
-    fetch(`http://localhost/favLocation/${props.username}`, {
+    fetch(baseURL + `/favLocation/${props.username}`, {
       method: 'GET',
       mode: 'cors',
       headers: {

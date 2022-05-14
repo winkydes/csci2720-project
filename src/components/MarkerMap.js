@@ -3,6 +3,8 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 import { mapboxToken } from '../environment';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+const baseURL = 'http://localhost';
+
 const mapper = [
   'North Point', // incorrect location
   'Central Pier', 
@@ -67,7 +69,7 @@ function MarkerMap(props) {
   // Initialize map
   useEffect(() => {
     if (map.current) return;
-    console.log('Map init');
+    // console.log('Map init');
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v11',
@@ -75,7 +77,7 @@ function MarkerMap(props) {
       zoom: zoom,
     });
 
-    fetch('http://localhost/geodata', {
+    fetch(baseURL + '/geodata', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -94,7 +96,7 @@ function MarkerMap(props) {
   // Update user movement on map
   useEffect(() => {
     if (!map.current) return;
-    console.log('Map move');
+    // console.log('Map move');
     map.current.on('move', () => {
       setLng(map.current.getCenter().lng.toFixed(4));
       setLat(map.current.getCenter().lat.toFixed(4));
